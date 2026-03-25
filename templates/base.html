@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    {% include "base/navbar.html" %}
+    {% block content %}
+    {% endblock content %}
+    {% include "base/footer.html" %}
+    {% include "base/bot.html" %}
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technician Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-6">
+    <div class="mx-auto max-w-5xl">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold">Technician Dashboard</h1>
+                <p class="text-slate-400">Welcome, {{ request.user.username }}</p>
+            </div>
+            <a href="{% url 'logout' %}" class="rounded-xl border border-white/10 px-4 py-2">Logout</a>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-3">
+            <div class="rounded-2xl bg-white/5 p-6 border border-white/10">
+                <h2 class="text-xl font-semibold">Device Health</h2>
+                <p class="mt-2 text-slate-300">Monitor sensor and connectivity issues.</p>
+            </div>
+            <div class="rounded-2xl bg-white/5 p-6 border border-white/10">
+                <h2 class="text-xl font-semibold">Maintenance Tasks</h2>
+                <p class="mt-2 text-slate-300">Review pending inspections and repairs.</p>
+            </div>
+            <div class="rounded-2xl bg-white/5 p-6 border border-white/10">
+                <h2 class="text-xl font-semibold">Bin Hardware</h2>
+                <p class="mt-2 text-slate-300">Update hardware status and servicing notes.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

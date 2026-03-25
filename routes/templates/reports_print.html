@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printable Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            body { background: white !important; color: black !important; }
+        }
+    </style>
+</head>
+<body class="bg-white text-black p-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="no-print mb-6">
+            <button onclick="window.print()" class="rounded bg-black px-4 py-2 text-white">Print Report</button>
+        </div>
+
+        <h1 class="text-3xl font-bold mb-2">Waste Management Report</h1>
+        <p class="mb-6">Printable management summary</p>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div><strong>Total Routes:</strong> {{ summary.total_routes }}</div>
+            <div><strong>Completed Routes:</strong> {{ summary.completed_routes }}</div>
+            <div><strong>Total Collections:</strong> {{ summary.total_collections }}</div>
+            <div><strong>Skipped Stops:</strong> {{ summary.skipped_stops }}</div>
+        </div>
+
+        <h2 class="text-2xl font-semibold mb-3">Routes</h2>
+        <table class="w-full border-collapse border mb-8">
+            <thead>
+                <tr>
+                    <th class="border p-2 text-left">Route</th>
+                    <th class="border p-2 text-left">Date</th>
+                    <th class="border p-2 text-left">Status</th>
+                    <th class="border p-2 text-left">Driver</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for route in routes %}
+                <tr>
+                    <td class="border p-2">{{ route.route_name }}</td>
+                    <td class="border p-2">{{ route.date }}</td>
+                    <td class="border p-2">{{ route.status }}</td>
+                    <td class="border p-2">{{ route.assigned_driver|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2 class="text-2xl font-semibold mb-3">Driver Summary</h2>
+        <table class="w-full border-collapse border">
+            <thead>
+                <tr>
+                    <th class="border p-2 text-left">Driver</th>
+                    <th class="border p-2 text-left">Assigned</th>
+                    <th class="border p-2 text-left">Completed</th>
+                    <th class="border p-2 text-left">Collected</th>
+                    <th class="border p-2 text-left">Skipped</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for driver in driver_summary %}
+                <tr>
+                    <td class="border p-2">{{ driver.username }}</td>
+                    <td class="border p-2">{{ driver.assigned_routes_count }}</td>
+                    <td class="border p-2">{{ driver.completed_routes_count }}</td>
+                    <td class="border p-2">{{ driver.collected_stops_count }}</td>
+                    <td class="border p-2">{{ driver.skipped_stops_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

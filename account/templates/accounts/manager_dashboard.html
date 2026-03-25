@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-6">
+    <div class="mx-auto max-w-5xl">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold">Manager Dashboard</h1>
+                <p class="text-slate-400">Welcome, {{ request.user.username }}</p>
+            </div>
+            <a href="{% url 'logout' %}" class="rounded-xl border border-white/10 px-4 py-2">Logout</a>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-3">
+            <a href="{% url 'bin_dashboard' %}" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
+                <h2 class="text-xl font-semibold">Bin Monitoring</h2>
+                <p class="mt-2 text-slate-300">Track live bin status, fill levels, and last activity.</p>
+            </a>
+            <a href="{% url 'alert_list' %}" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
+                <h2 class="text-xl font-semibold">Live Alerts</h2>
+                <p class="mt-2 text-slate-300">Review full-bin alerts and pending operational issues.</p>
+            </a>
+            <a href="{% url 'bin_map' %}" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
+                <h2 class="text-xl font-semibold">Map View</h2>
+                <p class="mt-2 text-slate-300">Visualize bins on the map with live status markers.</p>
+            </a>
+            <a href="#" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
+                <h2 class="text-xl font-semibold">Routes</h2>
+                <p class="mt-2 text-slate-300">Generate and assign optimized collection routes.</p>
+            </a>
+            <a href="{% url 'analytics_dashboard' %}" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
+                <h2 class="text-xl font-semibold">Analytics</h2>
+                <p class="mt-2 text-slate-300">View reporting, problem bins, and driver performance.</p>
+            </a>
+            <a href="{% url 'reports_home' %}" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
+                <h2 class="text-xl font-semibold">Reports</h2>
+                <p class="mt-2 text-slate-300">Export PDF, Excel, and printable management summaries.</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

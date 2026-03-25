@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bin Map View</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""
+    />
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+    ></script>
+
+    <style>
+        #map {
+            height: 650px;
+            width: 100%;
+            border-radius: 1rem;
+        }
+
+        .custom-marker {
+            width: 18px;
+            height: 18px;
+            border-radius: 9999px;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.4);
+        }
+
+        .marker-full {
+            background-color: #ef4444;
+        }
+
+        .marker-partial {
+            background-color: #eab308;
+        }
+
+        .marker-empty {
+            background-color: #22c55e;
+        }
+
+        .marker-offline {
+            background-color: #64748b;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-6">
+    <div class="mx-auto max-w-7xl">
+        <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+                <h1 class="text-3xl font-bold">Bin Map View</h1>
+                <p class="text-slate-400">Visualize all bins by location and current status</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="/bins/dashboard/" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">Dashboard</a>
+                <a href="/alerts/" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">Alerts</a>
+                <a href="{% url 'logout' %}" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">Logout</a>
+            </div>
+        </div>
+
+        <div class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="rounded-2xl border border-white/10 bg-red-500/10 p-4">
+                <div class="flex items-center gap-3">
+                    <div class="h-4 w-4 rounded-full bg-red-500"></div>
+                    <span class="text-red-300 font-medium">Full</span>
+                </div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-yellow-500/10 p-4">
+                <div class="flex items-center gap-3">
+                    <div class="h-4 w-4 rounded-full bg-yellow-500"></div>
+                    <span class="text-yellow-300 font-medium">Partial</span>
+                </div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-emerald-500/10 p-4">
+                <div class="flex items-center gap-3">
+                    <div class="h-4 w-4 rounded-full bg-emerald-500"></div>
+                    <span class="text-emerald-300 font-medium">Empty</span>
+                </div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-700/40 p-4">
+                <div class="flex items-center gap-3">
+                    <div class="h-4 w-4 rounded-full bg-slate-500"></div>
+                    <span class="text-slate-300 font-medium">Offline</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    {{ bins|json_script:"bins-data" }}
+
+    <script>
+        const bins = JSON.parse(document.getElementById('bins-data').textContent);
+
+        const defaultLat = bins.length ? parseFloat(bins[0].latitude) : 18.5204;
+        const defaultLng = bins.length ? parseFloat(bins[0].longitude) : 73.8567;
+
+        const map = L.map('map').setView([defaultLat, defaultLng], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        function getMarkerClass(status) {
+            if (status === 'FULL') return 'marker-full';
+            if (status === 'PARTIAL') return 'marker-partial';
+            if (status === 'OFFLINE') return 'marker-offline';
+            return 'marker-empty';
+        }
+
+        const bounds = [];
+
+        bins.forEach(bin => {
+            const lat = parseFloat(bin.latitude);
+            const lng = parseFloat(bin.longitude);
+
+            if (isNaN(lat) || isNaN(lng)) return;
+
+            const markerHtml = `<div class="custom-marker ${getMarkerClass(bin.status)}"></div>`;
+
+            const icon = L.divIcon({
+                html: markerHtml,
+                className: '',
+                iconSize: [18, 18],
+                iconAnchor: [9, 9],
+                popupAnchor: [0, -10]
+            });
+
+            const popupContent = `
+                <div style="min-width: 220px;">
+                    <h3 style="font-weight: bold; font-size: 16px; margin-bottom: 8px;">${bin.name}</h3>
+                    <p><strong>Bin ID:</strong> ${bin.bin_id}</p>
+                    <p><strong>Location:</strong> ${bin.location_name || '-'}</p>
+                    <p><strong>Fill:</strong> ${bin.fill_percentage}%</p>
+                    <p><strong>Status:</strong> ${bin.status}</p>
+                    <p><strong>Coordinates:</strong> ${lat}, ${lng}</p>
+                    <p><strong>Last Seen:</strong> ${bin.last_seen || '-'}</p>
+                </div>
+            `;
+
+            L.marker([lat, lng], { icon: icon })
+                .addTo(map)
+                .bindPopup(popupContent);
+
+            bounds.push([lat, lng]);
+        });
+
+        if (bounds.length > 1) {
+            map.fitBounds(bounds, { padding: [30, 30] });
+        }
+    </script>
+</body>
+</html>

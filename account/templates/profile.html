@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Profile | Smart Waste Management{% endblock %}
+{% block body_class %}bg-slate-950 text-white{% endblock %}
+{% block content %}
+<div class="relative min-h-screen overflow-hidden bg-slate-950 px-4 py-10">
+    <div class="absolute inset-0 -z-10">
+        <div class="absolute top-10 left-1/4 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl"></div>
+        <div class="absolute bottom-10 right-1/4 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_35%)]"></div>
+    </div>
+    <div class="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
+        <div class="mb-8 flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h2 class="text-3xl font-bold tracking-tight text-white">My Profile</h2>
+                <p class="mt-1 text-sm text-slate-400">Manage your account details</p>
+            </div>
+        </div>
+        <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5">
+                <p class="text-xs uppercase tracking-wider text-slate-400">Username</p>
+                <p class="mt-2 text-lg font-semibold text-white">{{ request.user.username }}</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5">
+                <p class="text-xs uppercase tracking-wider text-slate-400">Role</p>
+                <p class="mt-2 text-lg font-semibold text-emerald-300">{{ request.user.role }}</p>
+            </div>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                {% for field in form %}
+                    <div class="{% if field.field.widget.input_type == 'file' or field.name == 'address' or field.name == 'bio' %}md:col-span-2{% endif %}">
+                        <label for="{{ field.id_for_label }}" class="mb-2 block text-sm font-medium text-slate-200">
+                            {{ field.label }}
+                        </label>
+                        {% if field.field.widget.input_type == 'textarea' %}
+                            <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" rows="4" placeholder="Enter your {{ field.label|lower }}" class="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition duration-200 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 {% if field.errors %}border-red-500 focus:border-red-500 focus:ring-red-500/30{% endif %}">{{ field.value|default:'' }}</textarea>
+                        {% elif field.field.widget.input_type == 'file' %}
+                            <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}" class="block w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-slate-300 file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-400 file:px-4 file:py-2 file:font-medium file:text-slate-950 hover:file:bg-emerald-300 {% if field.errors %}border-red-500{% endif %}">
+                        {% else %}
+                            <input type="{% if field.field.widget.input_type %}{{ field.field.widget.input_type }}{% else %}text{% endif %}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Enter your {{ field.label|lower }}" class="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition duration-200 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 {% if field.errors %}border-red-500 focus:border-red-500 focus:ring-red-500/30{% endif %}">
+                        {% endif %}
+                        {% if field.help_text %}
+                            <div class="mt-2 text-xs text-slate-400">
+                                {{ field.help_text|safe }}
+                            </div>
+                        {% endif %}
+                        {% if field.errors %}
+                            <div class="mt-2 space-y-1">
+                                {% for error in field.errors %}
+                                    <p class="text-xs text-red-400">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="flex flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row">
+                <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-emerald-400 px-6 py-3 font-semibold text-slate-950 transition duration-200 hover:bg-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-400/50">
+                    Save Changes
+                </button>
+                <a href="#" class="inline-flex items-center justify-center rounded-xl border border-white/15 px-6 py-3 font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"> Cancel </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

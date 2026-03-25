@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bins</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-6">
+    <div class="mx-auto max-w-6xl">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold">Bin Monitoring</h1>
+                <p class="text-slate-400">Live overview of registered smart bins</p>
+            </div>
+            <a href="{% url 'logout' %}" class="rounded-xl border border-white/10 px-4 py-2">Logout</a>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-white/10 bg-white/5">
+            <table class="min-w-full text-left">
+                <thead class="border-b border-white/10 bg-white/5">
+                    <tr>
+                        <th class="px-4 py-3">Bin ID</th>
+                        <th class="px-4 py-3">Name</th>
+                        <th class="px-4 py-3">Location</th>
+                        <th class="px-4 py-3">Fill %</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Latitude</th>
+                        <th class="px-4 py-3">Longitude</th>
+                        <th class="px-4 py-3">Last Seen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bin in bins %}
+                    <tr class="border-b border-white/10">
+                        <td class="px-4 py-3">{{ bin.bin_id }}</td>
+                        <td class="px-4 py-3">{{ bin.name }}</td>
+                        <td class="px-4 py-3">{{ bin.location_name }}</td>
+                        <td class="px-4 py-3">{{ bin.fill_percentage }}%</td>
+                        <td class="px-4 py-3">{{ bin.status }}</td>
+                        <td class="px-4 py-3">{{ bin.latitude }}</td>
+                        <td class="px-4 py-3">{{ bin.longitude }}</td>
+                        <td class="px-4 py-3">{{ bin.last_seen }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="px-4 py-6 text-center text-slate-400">No bins registered yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

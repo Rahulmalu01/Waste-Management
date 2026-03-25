@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-6">
+    <div class="mx-auto max-w-7xl">
+        <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+                <h1 class="text-3xl font-bold">Reporting & Analytics Dashboard</h1>
+                <p class="text-slate-400">Operational insights and visual analytics</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="/bins/dashboard/" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">Bin Dashboard</a>
+                <a href="/routes/" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">Routes</a>
+                <a href="{% url 'logout' %}" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">Logout</a>
+            </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <p class="text-sm text-slate-400">Total Collections</p>
+                <p class="mt-2 text-3xl font-bold">{{ total_collections }}</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-emerald-500/10 p-5">
+                <p class="text-sm text-emerald-300">Completed Routes</p>
+                <p class="mt-2 text-3xl font-bold text-emerald-300">{{ completed_routes }}</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-yellow-500/10 p-5">
+                <p class="text-sm text-yellow-300">Skipped Stops</p>
+                <p class="mt-2 text-3xl font-bold text-yellow-300">{{ skipped_stops }}</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-sky-500/10 p-5">
+                <p class="text-sm text-sky-300">Avg Fill Level</p>
+                <p class="mt-2 text-3xl font-bold text-sky-300">{{ average_fill_level }}%</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-red-500/10 p-5">
+                <p class="text-sm text-red-300">Active Alerts</p>
+                <p class="mt-2 text-3xl font-bold text-red-300">{{ active_alerts }}</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-700/40 p-5">
+                <p class="text-sm text-slate-300">Offline Bins</p>
+                <p class="mt-2 text-3xl font-bold text-slate-200">{{ offline_bins }}</p>
+            </div>
+        </div>
+
+        <div class="mt-8 grid gap-6 lg:grid-cols-2">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 class="mb-4 text-xl font-semibold">Alert Trends (7 Days)</h2>
+                <canvas id="alertTrendsChart"></canvas>
+            </div>
+
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 class="mb-4 text-xl font-semibold">Route Completion Trends (7 Days)</h2>
+                <canvas id="routeTrendsChart"></canvas>
+            </div>
+
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 class="mb-4 text-xl font-semibold">Fill Level Trends (7 Days)</h2>
+                <canvas id="fillLevelChart"></canvas>
+            </div>
+
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 class="mb-4 text-xl font-semibold">Driver Performance</h2>
+                <canvas id="driverPerformanceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="mt-8 grid gap-6 lg:grid-cols-2">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 class="text-2xl font-semibold">Most Problematic Bins</h2>
+                <p class="mt-1 text-sm text-slate-400">Bins with highest skipped stops and alert frequency</p>
+
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left">
+                        <thead class="border-b border-white/10">
+                            <tr>
+                                <th class="px-4 py-3">Bin ID</th>
+                                <th class="px-4 py-3">Name</th>
+                                <th class="px-4 py-3">Skipped</th>
+                                <th class="px-4 py-3">Alerts</th>
+                                <th class="px-4 py-3">Offline Alerts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bin in problematic_bins %}
+                            <tr class="border-b border-white/10">
+                                <td class="px-4 py-3">{{ bin.bin_id }}</td>
+                                <td class="px-4 py-3">{{ bin.name }}</td>
+                                <td class="px-4 py-3">{{ bin.skipped_count }}</td>
+                                <td class="px-4 py-3">{{ bin.alert_count }}</td>
+                                <td class="px-4 py-3">{{ bin.offline_alert_count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="px-4 py-6 text-center text-slate-400">
+                                    No bin analytics available yet.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 class="text-2xl font-semibold">Driver Performance Summary</h2>
+                <p class="mt-1 text-sm text-slate-400">Route completion and stop handling by driver</p>
+
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left">
+                        <thead class="border-b border-white/10">
+                            <tr>
+                                <th class="px-4 py-3">Driver</th>
+                                <th class="px-4 py-3">Assigned Routes</th>
+                                <th class="px-4 py-3">Completed Routes</th>
+                                <th class="px-4 py-3">Collected Stops</th>
+                                <th class="px-4 py-3">Skipped Stops</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for driver in driver_performance %}
+                            <tr class="border-b border-white/10">
+                                <td class="px-4 py-3">{{ driver.username }}</td>
+                                <td class="px-4 py-3">{{ driver.assigned_routes_count }}</td>
+                                <td class="px-4 py-3">{{ driver.completed_routes_count }}</td>
+                                <td class="px-4 py-3">{{ driver.collected_stops_count }}</td>
+                                <td class="px-4 py-3">{{ driver.skipped_stops_count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="px-4 py-6 text-center text-slate-400">
+                                    No driver analytics available yet.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5">
+            <h2 class="text-2xl font-semibold">Recent Operational Activity</h2>
+            <p class="mt-1 text-sm text-slate-400">Latest route and collection events</p>
+
+            <div class="mt-4 space-y-3">
+                {% for activity in recent_activities %}
+                    <div class="rounded-xl border border-white/10 bg-slate-900 p-4">
+                        <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <p class="font-medium">{{ activity.action }}</p>
+                                <p class="mt-1 text-slate-300">{{ activity.message }}</p>
+                            </div>
+                            <div class="text-sm text-slate-500">
+                                {{ activity.created_at }}
+                            </div>
+                        </div>
+                        <p class="mt-2 text-sm text-slate-400">
+                            Route: {{ activity.route.route_name }} |
+                            By: {{ activity.user|default:"System" }}
+                        </p>
+                    </div>
+                {% empty %}
+                    <p class="text-slate-400">No activity recorded yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {{ chart_labels|json_script:"chart-labels" }}
+    {{ full_alert_data|json_script:"full-alert-data" }}
+    {{ offline_alert_data|json_script:"offline-alert-data" }}
+    {{ completed_route_data|json_script:"completed-route-data" }}
+    {{ in_progress_route_data|json_script:"in-progress-route-data" }}
+    {{ fill_level_data|json_script:"fill-level-data" }}
+    {{ driver_labels|json_script:"driver-labels" }}
+    {{ driver_collected_data|json_script:"driver-collected-data" }}
+    {{ driver_skipped_data|json_script:"driver-skipped-data" }}
+
+    <script>
+        const chartLabels = JSON.parse(document.getElementById('chart-labels').textContent);
+        const fullAlertData = JSON.parse(document.getElementById('full-alert-data').textContent);
+        const offlineAlertData = JSON.parse(document.getElementById('offline-alert-data').textContent);
+        const completedRouteData = JSON.parse(document.getElementById('completed-route-data').textContent);
+        const inProgressRouteData = JSON.parse(document.getElementById('in-progress-route-data').textContent);
+        const fillLevelData = JSON.parse(document.getElementById('fill-level-data').textContent);
+        const driverLabels = JSON.parse(document.getElementById('driver-labels').textContent);
+        const driverCollectedData = JSON.parse(document.getElementById('driver-collected-data').textContent);
+        const driverSkippedData = JSON.parse(document.getElementById('driver-skipped-data').textContent);
+
+        new Chart(document.getElementById('alertTrendsChart'), {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [
+                    {
+                        label: 'Full Alerts',
+                        data: fullAlertData,
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Offline Alerts',
+                        data: offlineAlertData,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#e2e8f0' }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#94a3b8' },
+                        grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    },
+                    y: {
+                        ticks: { color: '#94a3b8' },
+                        grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('routeTrendsChart'), {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [
+                    {
+                        label: 'Completed Routes',
+                        data: completedRouteData,
+                        backgroundColor: 'rgba(34, 197, 94, 0.7)'
+                    },
+                    {
+                        label: 'In Progress Routes',
+                        data: inProgressRouteData,
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#e2e8f0' }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#94a3b8' },
+                        grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    },
+                    y: {
+                        ticks: { color: '#94a3b8' },
+                        grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('fillLevelChart'), {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [
+                    {
+                        label: 'Average Fill Level (%)',
+                        data: fillLevelData,
+                        borderColor: '#38bdf8',
+                        backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#e2e8f0' }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#94a3b8' },
+                        grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    },
+                    y: {
+                        ticks: { color: '#94a3b8' },
+                        grid: { color: 'rgba(148, 163, 184, 0.1)' },
+                        suggestedMax: 100
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('driverPerformanceChart'), {
+            type: 'bar',
+            data: {
+                labels: driverLabels,
+                datasets: [
+                    {
+                        label: 'Collected Stops',
+                        data: driverCollectedData,
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)'
+                    },
+                    {
+                        label: 'Skipped Stops',
+                        data: driverSkippedData,
+                        backgroundColor: 'rgba(245, 158, 11, 0.7)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#e2e8f0' }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#94a3b8' },
+                        grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    },
+                    y: {
+                        ticks: { color: '#94a3b8' },
+                        grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

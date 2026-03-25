@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-6">
+    <div class="mx-auto max-w-5xl">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold">Driver Dashboard</h1>
+                <p class="text-slate-400">Welcome, {{ request.user.username }}</p>
+            </div>
+            <a href="{% url 'logout' %}" class="rounded-xl border border-white/10 px-4 py-2">Logout</a>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-3">
+            <div class="rounded-2xl bg-white/5 p-6 border border-white/10">
+                <h2 class="text-xl font-semibold">Assigned Route</h2>
+                <p class="mt-2 text-slate-300">View today's pickup route and stop order.</p>
+            </div>
+            <div class="rounded-2xl bg-white/5 p-6 border border-white/10">
+                <h2 class="text-xl font-semibold">Bin Alerts</h2>
+                <p class="mt-2 text-slate-300">See newly assigned full-bin alerts.</p>
+            </div>
+            <div class="rounded-2xl bg-white/5 p-6 border border-white/10">
+                <h2 class="text-xl font-semibold">Collection Status</h2>
+                <p class="mt-2 text-slate-300">Mark bins as collected or skipped.</p>
+            </div>
+            <a href="/routes/my-routes/" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
+                <h2 class="text-xl font-semibold">My Routes</h2>
+                <p class="mt-2 text-slate-300">View your assigned routes and collection stops.</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

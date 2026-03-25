@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-6">
+    <div class="mx-auto max-w-7xl">
+        <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+                <h1 class="text-3xl font-bold">Report Center</h1>
+                <p class="text-slate-400">Filter, export, and print management reports</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{% url 'export_reports_pdf' %}?{{ request.GET.urlencode }}" class="rounded-xl bg-red-500/20 px-4 py-2 text-red-300">Export PDF</a>
+                <a href="{% url 'export_reports_excel' %}?{{ request.GET.urlencode }}" class="rounded-xl bg-emerald-500/20 px-4 py-2 text-emerald-300">Export Excel</a>
+                <a href="{% url 'printable_reports' %}?{{ request.GET.urlencode }}" target="_blank" class="rounded-xl bg-sky-500/20 px-4 py-2 text-sky-300">Printable View</a>
+                <a href="{% url 'send_manual_report' 'daily' %}" class="rounded-xl bg-purple-500/20 px-4 py-2 text-purple-300">Send Daily Report</a>
+                <a href="{% url 'send_manual_report' 'weekly' %}" class="rounded-xl bg-indigo-500/20 px-4 py-2 text-indigo-300">Send Weekly Report</a>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <h2 class="text-xl font-semibold">Filters</h2>
+            <form method="get" class="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                <div>{{ form.start_date.label_tag }} {{ form.start_date }}</div>
+                <div>{{ form.end_date.label_tag }} {{ form.end_date }}</div>
+                <div>{{ form.driver.label_tag }} {{ form.driver }}</div>
+                <div>{{ form.bin_obj.label_tag }} {{ form.bin_obj }}</div>
+                <div>{{ form.route_status.label_tag }} {{ form.route_status }}</div>
+
+                <div class="xl:col-span-5 flex gap-3">
+                    <button type="submit" class="rounded-xl bg-emerald-400 px-5 py-2 font-semibold text-slate-950">Apply Filters</button>
+                    <a href="{% url 'reports_home' %}" class="rounded-xl border border-white/10 px-5 py-2">Reset</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <p class="text-sm text-slate-400">Total Routes</p>
+                <p class="mt-2 text-3xl font-bold">{{ summary.total_routes }}</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-emerald-500/10 p-5">
+                <p class="text-sm text-emerald-300">Completed Routes</p>
+                <p class="mt-2 text-3xl font-bold text-emerald-300">{{ summary.completed_routes }}</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-yellow-500/10 p-5">
+                <p class="text-sm text-yellow-300">Skipped Stops</p>
+                <p class="mt-2 text-3xl font-bold text-yellow-300">{{ summary.skipped_stops }}</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-sky-500/10 p-5">
+                <p class="text-sm text-sky-300">Total Collections</p>
+                <p class="mt-2 text-3xl font-bold text-sky-300">{{ summary.total_collections }}</p>
+            </div>
+        </div>
+
+        <div class="mt-8 grid gap-6 lg:grid-cols-2">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 class="text-2xl font-semibold">Routes</h2>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left">
+                        <thead class="border-b border-white/10">
+                            <tr>
+                                <th class="px-4 py-3">Route</th>
+                                <th class="px-4 py-3">Date</th>
+                                <th class="px-4 py-3">Status</th>
+                                <th class="px-4 py-3">Driver</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for route in routes %}
+                            <tr class="border-b border-white/10">
+                                <td class="px-4 py-3">{{ route.route_name }}</td>
+                                <td class="px-4 py-3">{{ route.date }}</td>
+                                <td class="px-4 py-3">{{ route.status }}</td>
+                                <td class="px-4 py-3">{{ route.assigned_driver|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="px-4 py-6 text-center text-slate-400">No routes found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 class="text-2xl font-semibold">Driver Summary</h2>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full text-left">
+                        <thead class="border-b border-white/10">
+                            <tr>
+                                <th class="px-4 py-3">Driver</th>
+                                <th class="px-4 py-3">Assigned</th>
+                                <th class="px-4 py-3">Completed</th>
+                                <th class="px-4 py-3">Collected</th>
+                                <th class="px-4 py-3">Skipped</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for driver in driver_summary %}
+                            <tr class="border-b border-white/10">
+                                <td class="px-4 py-3">{{ driver.username }}</td>
+                                <td class="px-4 py-3">{{ driver.assigned_routes_count }}</td>
+                                <td class="px-4 py-3">{{ driver.completed_routes_count }}</td>
+                                <td class="px-4 py-3">{{ driver.collected_stops_count }}</td>
+                                <td class="px-4 py-3">{{ driver.skipped_stops_count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="px-4 py-6 text-center text-slate-400">No driver data.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-6">
+    <div class="mx-auto max-w-6xl">
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold">Routes</h1>
+                <p class="text-slate-400">Generated collection routes and stop sequences</p>
+            </div>
+            <a href="/routes/generate/" class="rounded-xl bg-emerald-400 px-4 py-2 font-semibold text-slate-950">
+                Generate Route
+            </a>
+            <a href="/routes/analytics/" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">
+                Analytics
+            </a>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-white/10 bg-white/5">
+            <table class="min-w-full text-left">
+                <thead class="border-b border-white/10">
+                    <tr>
+                        <th class="px-4 py-3">Route</th>
+                        <th class="px-4 py-3">Date</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Total Bins</th>
+                        <th class="px-4 py-3">Distance</th>
+                        <th class="px-4 py-3">Driver</th>
+                        <th class="px-4 py-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for route in routes %}
+                    <tr class="border-b border-white/10">
+                        <td class="px-4 py-3">{{ route.route_name }}</td>
+                        <td class="px-4 py-3">{{ route.date }}</td>
+                        <td class="px-4 py-3">{{ route.status }}</td>
+                        <td class="px-4 py-3">{{ route.total_bins }}</td>
+                        <td class="px-4 py-3">{{ route.total_distance_km }} km</td>
+                        <td class="px-4 py-3">{{ route.assigned_driver|default:"-" }}</td>
+                        <td class="px-4 py-3">
+                            <a href="{% url 'assign_route' route.id %}" class="rounded-lg bg-sky-500/20 px-3 py-2 text-sky-300">Assign</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-4 py-6 text-center text-slate-400">No routes generated yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
