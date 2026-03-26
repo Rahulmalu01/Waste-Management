@@ -1,39 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Driver Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-white min-h-screen p-6">
-    <div class="mx-auto max-w-5xl">
-        <div class="flex items-center justify-between mb-8">
-            <div>
-                <h1 class="text-3xl font-bold">Driver Dashboard</h1>
-                <p class="text-slate-400">Welcome, {{ request.user.username }}</p>
-            </div>
-            <a href="{% url 'logout' %}" class="rounded-xl border border-white/10 px-4 py-2">Logout</a>
+{% extends "base.html" %}
+{% block title %}Driver Dashboard{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto py-10 space-y-8">
+    <div>
+        <h1 class="text-3xl font-bold">Driver Dashboard</h1>
+        <p class="text-slate-400 mt-1">Manage your routes and collections</p>
+    </div>
+    <div class="grid sm:grid-cols-3 gap-6">
+        <div class="card">
+            <p class="text-slate-400 text-sm">Today's Route</p>
+            <h2 class="text-xl font-bold mt-2">Assigned</h2>
         </div>
-
-        <div class="grid gap-6 md:grid-cols-3">
-            <div class="rounded-2xl bg-white/5 p-6 border border-white/10">
-                <h2 class="text-xl font-semibold">Assigned Route</h2>
-                <p class="mt-2 text-slate-300">View today's pickup route and stop order.</p>
-            </div>
-            <div class="rounded-2xl bg-white/5 p-6 border border-white/10">
-                <h2 class="text-xl font-semibold">Bin Alerts</h2>
-                <p class="mt-2 text-slate-300">See newly assigned full-bin alerts.</p>
-            </div>
-            <div class="rounded-2xl bg-white/5 p-6 border border-white/10">
-                <h2 class="text-xl font-semibold">Collection Status</h2>
-                <p class="mt-2 text-slate-300">Mark bins as collected or skipped.</p>
-            </div>
-            <a href="/routes/my-routes/" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
-                <h2 class="text-xl font-semibold">My Routes</h2>
-                <p class="mt-2 text-slate-300">View your assigned routes and collection stops.</p>
-            </a>
+        <div class="card">
+            <p class="text-slate-400 text-sm">Pending Bins</p>
+            <h2 class="text-xl font-bold mt-2">6</h2>
+        </div>
+        <div class="card">
+            <p class="text-slate-400 text-sm">Completed</p>
+            <h2 class="text-xl font-bold mt-2 text-emerald-400">12</h2>
         </div>
     </div>
-</body>
-</html>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="card">
+            <h3 class="font-semibold">Assigned Route</h3>
+            <p class="text-slate-400 text-sm mt-2">View today’s route</p>
+        </div>
+        <div class="card">
+            <h3 class="font-semibold">Bin Alerts</h3>
+            <p class="text-slate-400 text-sm mt-2">Urgent pickups</p>
+        </div>
+        <div class="card">
+            <h3 class="font-semibold">Collection Status</h3>
+            <p class="text-slate-400 text-sm mt-2">Track progress</p>
+        </div>
+        <a href="/routes/my-routes/" class="card">
+            <h3 class="font-semibold">My Routes</h3>
+            <p class="text-slate-400 text-sm mt-2">View all routes</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

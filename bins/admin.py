@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Bin, BinReading, DeviceAuthLog
 
-
 @admin.register(Bin)
 class BinAdmin(admin.ModelAdmin):
     list_display = (
@@ -18,13 +17,11 @@ class BinAdmin(admin.ModelAdmin):
     list_filter = ('status', 'is_active')
     readonly_fields = ('device_key',)
 
-
 @admin.register(BinReading)
 class BinReadingAdmin(admin.ModelAdmin):
     list_display = ('bin', 'distance_cm', 'fill_percentage', 'created_at')
     search_fields = ('bin__bin_id', 'bin__name')
     list_filter = ('created_at',)
-
 
 @admin.register(DeviceAuthLog)
 class DeviceAuthLogAdmin(admin.ModelAdmin):

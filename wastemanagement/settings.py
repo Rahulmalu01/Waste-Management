@@ -30,7 +30,12 @@ OPENROUTESERVICE_API_KEY = os.getenv("OPENROUTESERVICE_API_KEY")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 # DEBUG = False
 
-ALLOWED_HOSTS = ["yourdomain.com", "your-ip", "localhost"]
+ALLOWED_HOSTS = [
+    "yourdomain.com", 
+    "192.168.1.5", 
+    "localhost",
+    "127.0.0.1"
+]
 # CSRF_TRUSTED_ORIGINS = ['*']
 CSRF_COOKIE_SECURE = True
 

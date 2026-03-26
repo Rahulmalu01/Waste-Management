@@ -4,70 +4,68 @@
 {% block body_class %}bg-slate-950 text-white{% endblock %}
 {% block content %}
 <link rel="stylesheet" href='{% static "css/home/index.css" %}'>
-<main>
-    <section class="mx-auto grid max-w-7xl gap-10 px-6 py-20 md:grid-cols-2 md:items-center">
+<main class="space-y-24">
+    <section class="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-2 md:items-center">
         <div>
             <span class="inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1 text-sm text-emerald-300">Built for smart city and company operations</span>
-            <h2 class="mt-6 text-4xl font-extrabold leading-tight md:text-6xl"> Smarter waste collection with live bin tracking and intelligent routing. </h2>
-            <p class="mt-6 max-w-2xl text-lg text-slate-300"> A Django-powered platform that monitors garbage bins using IoT sensors, detects when bins are full, tracks their location with GPS, notifies drivers through Telegram, and helps optimize collection rounds. </p>
+            <h2 class="mt-6 text-4xl font-extrabold leading-tight md:text-6xl">Smarter waste collection with live bin tracking</h2>
+            <p class="mt-6 max-w-xl text-lg text-slate-300">Monitor bins in real-time, optimize routes, and automate alerts using IoT, GPS tracking, and intelligent analytics.</p>
             <div class="mt-8 flex flex-wrap gap-4">
-                <a href="#features" class="rounded-2xl bg-emerald-400 px-6 py-3 font-semibold text-slate-950 transition hover:scale-[1.02]">Explore Features</a>
-                <a href="{% url 'about' %}" class="rounded-2xl border border-white/15 px-6 py-3 font-semibold text-white hover:bg-white/5">Learn More</a>
+                <a href="{% url 'login' %}" class="rounded-2xl bg-emerald-400 px-6 py-3 font-semibold text-slate-950 hover:bg-emerald-300 transition">Get Started</a>
+                <a href="#features"  class="rounded-2xl border border-white/15 px-6 py-3 font-semibold hover:bg-white/5 transition">Explore Features</a>
             </div>
         </div>
-        <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-emerald-500/10">
-            <div class="grid gap-4 md:grid-cols-2">
-                <div class="rounded-2xl bg-slate-900 p-5">
-                    <p class="text-sm text-slate-400">Live Bin Status</p>
-                    <p class="mt-2 text-3xl font-bold text-emerald-300">Real-Time</p>
-                    <p class="mt-2 text-sm text-slate-400">Track fill levels from ultrasonic sensors.</p>
-                </div>
-                <div class="rounded-2xl bg-slate-900 p-5">
-                    <p class="text-sm text-slate-400">Driver Alerts</p>
-                    <p class="mt-2 text-3xl font-bold text-sky-300">Telegram</p>
-                    <p class="mt-2 text-sm text-slate-400">Instant notifications for filled bins.</p>
-                </div>
-                <div class="rounded-2xl bg-slate-900 p-5">
-                    <p class="text-sm text-slate-400">Route Planning</p>
-                    <p class="mt-2 text-3xl font-bold text-violet-300">Optimized</p>
-                    <p class="mt-2 text-sm text-slate-400">Reduce travel time in a single collection round.</p>
-                </div>
-                <div class="rounded-2xl bg-slate-900 p-5">
-                    <p class="text-sm text-slate-400">Location Tracking</p>
-                    <p class="mt-2 text-3xl font-bold text-amber-300">GPS Enabled</p>
-                    <p class="mt-2 text-sm text-slate-400">Know exactly where each bin is located.</p>
-                </div>
+        <div class="grid gap-4 md:grid-cols-2">
+            <div class="card hover:scale-[1.02]">
+                <p class="text-sm text-slate-400">Live Bin Status</p>
+                <p class="mt-2 text-2xl font-bold text-emerald-300">Real-Time</p>
+                <p class="mt-2 text-sm text-slate-400">Track fill levels instantly</p>
+            </div>
+            <div class="card hover:scale-[1.02]">
+                <p class="text-sm text-slate-400">Driver Alerts</p>
+                <p class="mt-2 text-2xl font-bold text-sky-300">Telegram</p>
+                <p class="mt-2 text-sm text-slate-400">Instant notifications</p>
+            </div>
+            <div class="card hover:scale-[1.02]">
+                <p class="text-sm text-slate-400">Route Planning</p>
+                <p class="mt-2 text-2xl font-bold text-violet-300">Optimized</p>
+                <p class="mt-2 text-sm text-slate-400">Reduce travel time</p>
+            </div>
+            <div class="card hover:scale-[1.02]">
+                <p class="text-sm text-slate-400">GPS Tracking</p>
+                <p class="mt-2 text-2xl font-bold text-amber-300">Accurate</p>
+                <p class="mt-2 text-sm text-slate-400">Precise bin location</p>
             </div>
         </div>
     </section>
     <section id="about" class="border-t border-white/10 bg-slate-900/60">
         <div class="mx-auto max-w-7xl px-6 py-20">
             <h3 class="text-3xl font-bold">About the Platform</h3>
-            <p class="mt-6 max-w-4xl text-lg leading-8 text-slate-300"> This Smart Waste Management System is designed to improve the efficiency of waste collection operations for companies, campuses, smart cities, and municipal teams. The platform combines IoT hardware, web technology, live notifications, and route intelligence to create a practical end-to-end solution for modern waste management. </p>
-            <p class="mt-4 max-w-4xl text-lg leading-8 text-slate-300"> Instead of checking all bins manually, the system automatically identifies which bins are filled, stores the data in a central backend, and helps operations teams make faster and better collection decisions. </p>
+            <p class="mt-6 max-w-3xl text-lg text-slate-300 leading-8">Smart Waste Management improves efficiency for cities and organizations by automating bin monitoring, alerting, and route planning using IoT and real-time data.</p>
+            <p class="mt-4 max-w-3xl text-lg text-slate-300 leading-8">Instead of manual inspection, the system identifies filled bins and helps teams make faster operational decisions.</p>
         </div>
     </section>
     <section id="features" class="mx-auto max-w-7xl px-6 py-20">
         <div class="mb-12 max-w-3xl">
             <h3 class="text-3xl font-bold">Core Features</h3>
-            <p class="mt-4 text-slate-300">The first version of the platform focuses on the most useful operational features.</p>
+            <p class="mt-4 text-slate-300">Essential tools designed for real-world waste management operations.</p>
         </div>
         <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h4 class="text-xl font-semibold">Bin Fill Monitoring</h4>
-                <p class="mt-3 text-slate-300">Ultrasonic sensors measure waste level inside each bin and update current fill percentage.</p>
+            <div class="card hover:scale-[1.02]">
+                <h4 class="text-xl font-semibold">Bin Monitoring</h4>
+                <p class="mt-3 text-slate-300">Ultrasonic sensors track fill levels in real-time.</p>
             </div>
-            <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h4 class="text-xl font-semibold">GPS Location Tracking</h4>
-                <p class="mt-3 text-slate-300">Each smart bin sends latitude and longitude so the system knows its exact location.</p>
+            <div class="card hover:scale-[1.02]">
+                <h4 class="text-xl font-semibold">GPS Tracking</h4>
+                <p class="mt-3 text-slate-300">Each bin reports its exact location.</p>
             </div>
-            <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h4 class="text-xl font-semibold">Telegram Alerts</h4>
-                <p class="mt-3 text-slate-300">Drivers and managers receive instant alerts whenever a bin crosses the configured threshold.</p>
+            <div class="card hover:scale-[1.02]">
+                <h4 class="text-xl font-semibold">Instant Alerts</h4>
+                <p class="mt-3 text-slate-300">Notifications sent when bins are full.</p>
             </div>
-            <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+            <div class="card hover:scale-[1.02]">
                 <h4 class="text-xl font-semibold">Route Optimization</h4>
-                <p class="mt-3 text-slate-300">Filled bins are grouped into an efficient collection route for a single pickup round.</p>
+                <p class="mt-3 text-slate-300">Efficient collection route planning.</p>
             </div>
         </div>
     </section>
@@ -75,49 +73,53 @@
         <div class="mx-auto max-w-7xl px-6 py-20">
             <h3 class="text-3xl font-bold">How It Works</h3>
             <div class="mt-10 grid gap-6 md:grid-cols-4">
-                <div class="rounded-2xl bg-slate-900 p-6">
-                    <p class="text-sm text-emerald-300">Step 01</p>
-                    <h4 class="mt-3 text-xl font-semibold">Collect Sensor Data</h4>
-                    <p class="mt-3 text-slate-300">ESP8266 reads ultrasonic and GPS values from the smart bin.</p>
+                {% for step in "1234" %}
+                <div class="card">
+                    <p class="text-sm text-emerald-300">Step 0{{ forloop.counter }}</p>
+                    <h4 class="mt-3 text-xl font-semibold">
+                        {% if forloop.counter == 1 %}Collect Data
+                        {% elif forloop.counter == 2 %}Send to Backend
+                        {% elif forloop.counter == 3 %}Trigger Alerts
+                        {% else %}Optimize Routes{% endif %}
+                    </h4>
+                    <p class="mt-3 text-slate-300 text-sm">
+                        {% if forloop.counter == 1 %}Sensors gather bin data.
+                        {% elif forloop.counter == 2 %}Data stored in Django backend.
+                        {% elif forloop.counter == 3 %}Alerts sent automatically.
+                        {% else %}Routes generated efficiently.{% endif %}
+                    </p>
                 </div>
-                <div class="rounded-2xl bg-slate-900 p-6">
-                    <p class="text-sm text-emerald-300">Step 02</p>
-                    <h4 class="mt-3 text-xl font-semibold">Send to Backend</h4>
-                    <p class="mt-3 text-slate-300">The device sends data to the Django application using an API endpoint.</p>
-                </div>
-                <div class="rounded-2xl bg-slate-900 p-6">
-                    <p class="text-sm text-emerald-300">Step 03</p>
-                    <h4 class="mt-3 text-xl font-semibold">Trigger Alerts</h4>
-                    <p class="mt-3 text-slate-300">If a bin is full, the system creates an alert and sends a Telegram message.</p>
-                </div>
-                <div class="rounded-2xl bg-slate-900 p-6">
-                    <p class="text-sm text-emerald-300">Step 04</p>
-                    <h4 class="mt-3 text-xl font-semibold">Plan Collection Round</h4>
-                    <p class="mt-3 text-slate-300">The route engine generates the best sequence for collecting all filled bins.</p>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
     <section id="roles" class="mx-auto max-w-7xl px-6 py-20">
         <h3 class="text-3xl font-bold">Role-Based Access</h3>
         <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+            <div class="card">
                 <h4 class="text-xl font-semibold">Admin</h4>
-                <p class="mt-3 text-slate-300">Manage users, bins, alerts, routes, and full system settings.</p>
+                <p class="mt-3 text-slate-300">Full system control</p>
             </div>
-            <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+            <div class="card">
                 <h4 class="text-xl font-semibold">Manager</h4>
-                <p class="mt-3 text-slate-300">Monitor operations, review alerts, and assign optimized routes.</p>
+                <p class="mt-3 text-slate-300">Monitor operations</p>
             </div>
-            <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+            <div class="card">
                 <h4 class="text-xl font-semibold">Driver</h4>
-                <p class="mt-3 text-slate-300">View assigned routes, receive alerts, and update collection status.</p>
+                <p class="mt-3 text-slate-300">Follow assigned routes</p>
             </div>
-            <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+            <div class="card">
                 <h4 class="text-xl font-semibold">Technician</h4>
-                <p class="mt-3 text-slate-300">Inspect devices, resolve sensor issues, and maintain bin hardware.</p>
+                <p class="mt-3 text-slate-300">Maintain devices</p>
             </div>
         </div>
     </section>
+    <section class="text-center px-6 pb-20">
+        <h3 class="text-3xl font-bold">Start optimizing your waste operations today</h3>
+        <div class="mt-6 flex justify-center gap-4">
+            <a href="{% url 'signup' %}" class="bg-emerald-400 text-black px-6 py-3 rounded-xl font-semibold hover:bg-emerald-300">Create Account</a>
+            <a href="{% url 'login' %}" class="border border-white/20 px-6 py-3 rounded-xl hover:bg-white/5">Login</a>
+        </div>
+    </section>
 </main>
-{% endblock content %}
+{% endblock %}

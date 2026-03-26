@@ -1,28 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate Route</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-white min-h-screen p-6">
+{% extends "base.html" %}
+{% block title %}Generate Route{% endblock %}
+{% block body_class %}bg-slate-950 text-white{% endblock %}
+{% block content %}
+<div class="min-h-screen p-6">
     <div class="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-white/5 p-8">
         <h1 class="text-3xl font-bold">Generate Optimized Route</h1>
-        <p class="mt-3 text-slate-400">
-            This will fetch all bins marked as full and generate one optimized collection route.
-        </p>
-
+        <p class="mt-3 text-slate-400">This will fetch all bins marked as full and generate one optimized collection route.</p>
         <form method="post" class="mt-6">
             {% csrf_token %}
-            <button type="submit" class="rounded-xl bg-emerald-400 px-6 py-3 font-semibold text-slate-950">
-                Generate Route
-            </button>
+            <button type="submit" class="rounded-xl bg-emerald-400 px-6 py-3 font-semibold text-slate-950">Generate Route</button>
         </form>
-
         <div class="mt-6">
-            <a href="/routes/" class="text-sky-300 hover:underline">View all routes</a>
+            <a href="{% url 'routes_list' %}" class="text-sky-300 hover:underline">View all routes</a>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

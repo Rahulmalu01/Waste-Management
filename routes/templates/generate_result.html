@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Route Generation Result</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-white min-h-screen p-6">
+{% extends "base.html" %}
+{% block title %}Route Generation Result{% endblock %}
+{% block body_class %}bg-slate-950 text-white{% endblock %}
+{% block content %}
+<div class="min-h-screen p-6">
     <div class="mx-auto max-w-4xl rounded-2xl border border-white/10 bg-white/5 p-8">
         <h1 class="text-3xl font-bold">Route Generation Result</h1>
         <p class="mt-3 text-slate-400">{{ message }}</p>
-
         {% if route %}
             <div class="mt-8 rounded-xl border border-white/10 bg-slate-900 p-5">
                 <p><strong>Route Name:</strong> {{ route.route_name }}</p>
@@ -18,7 +13,6 @@
                 <p><strong>Total Bins:</strong> {{ route.total_bins }}</p>
                 <p><strong>Total Distance:</strong> {{ route.total_distance_km }} km</p>
             </div>
-
             <div class="mt-6">
                 <h2 class="text-2xl font-semibold mb-4">Stops</h2>
                 <div class="overflow-x-auto rounded-xl border border-white/10">
@@ -41,17 +35,20 @@
                                 <td class="px-4 py-3">{{ stop.bin.location_name }}</td>
                                 <td class="px-4 py-3">{{ stop.status }}</td>
                             </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="px-4 py-6 text-center text-slate-400">No stops available.</td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
         {% endif %}
-
         <div class="mt-6 flex gap-4">
-            <a href="/routes/" class="text-sky-300 hover:underline">View all routes</a>
-            <a href="/routes/generate/" class="text-emerald-300 hover:underline">Generate another</a>
+            <a href="{% url 'routes_list' %}" class="text-sky-300 hover:underline">View all routes</a>
+            <a href="{% url 'generate_route' %}" class="text-emerald-300 hover:underline">Generate another</a>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

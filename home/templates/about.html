@@ -1,56 +1,81 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}About Page{% endblock %}
+{% block title %}About | Smart Waste{% endblock %}
 {% block body_class %}bg-slate-950 text-white{% endblock %}
 {% block content %}
-<link rel="stylesheet" href='{% static "css/home/about.css" %}'>
-<main class="mx-auto max-w-7xl px-6 py-20">
-    <section class="max-w-4xl">
+<link rel="stylesheet" href="{% static 'css/home/about.css' %}">
+<main class="mx-auto max-w-7xl px-6 py-20 space-y-24">
+    <section class="max-w-3xl">
         <h2 class="text-4xl font-extrabold">About This Project</h2>
-        <p class="mt-6 text-lg text-slate-300 leading-8"> The Smart Waste Management System is an IoT-driven platform designed to improve the efficiency of waste collection processes in companies, campuses, and smart city environments. By integrating hardware sensors, real-time data processing, and intelligent decision-making, the system reduces manual effort and ensures timely waste collection. </p>
+        <p class="mt-6 text-lg text-slate-300 leading-8">Smart Waste Management System is an IoT-driven platform designed to improve waste collection efficiency in smart cities, campuses, and organizations through real-time monitoring and intelligent automation.</p>
     </section>
-    <section class="mt-16 grid gap-10 md:grid-cols-2">
-        <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+    <section class="grid gap-8 md:grid-cols-2">
+        <div class="card">
             <h3 class="text-2xl font-semibold">Our Vision</h3>
-            <p class="mt-4 text-slate-300"> To build a scalable and intelligent waste management ecosystem that leverages IoT and data-driven insights to create cleaner, smarter, and more efficient environments. </p>
+            <p class="mt-4 text-slate-300">Build a scalable ecosystem using IoT and data insights to create cleaner and smarter environments.</p>
         </div>
-        <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+        <div class="card">
             <h3 class="text-2xl font-semibold">Our Mission</h3>
-            <p class="mt-4 text-slate-300"> To automate waste monitoring, reduce operational costs, optimize collection routes, and improve response times using modern web technologies and embedded systems. </p>
+            <p class="mt-4 text-slate-300">Automate waste monitoring, reduce operational costs, and optimize collection using modern technology.</p>
         </div>
     </section>
-    <section class="mt-20">
+    <section>
         <h3 class="text-3xl font-bold">What Makes This System Unique?</h3>
         <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            <div class="rounded-2xl bg-slate-900 p-6">
-                <h4 class="font-semibold">IoT Integration</h4>
-                <p class="mt-3 text-slate-300">Real-time bin monitoring using ESP8266 and ultrasonic sensors.</p>
+            <div class="card hover:scale-[1.02]">
+                <h4 class="font-semibold text-lg">IoT Integration</h4>
+                <p class="mt-3 text-slate-300 text-sm">Real-time monitoring using ESP8266 and ultrasonic sensors.</p>
             </div>
-            <div class="rounded-2xl bg-slate-900 p-6">
-                <h4 class="font-semibold">Live Tracking</h4>
-                <p class="mt-3 text-slate-300">GPS-enabled tracking ensures accurate bin location data.</p>
+            <div class="card hover:scale-[1.02]">
+                <h4 class="font-semibold text-lg">Live Tracking</h4>
+                <p class="mt-3 text-slate-300 text-sm">GPS-enabled tracking for accurate bin location.</p>
             </div>
-            <div class="rounded-2xl bg-slate-900 p-6">
-                <h4 class="font-semibold">Smart Alerts</h4>
-                <p class="mt-3 text-slate-300">Instant Telegram alerts notify drivers about full bins.</p>
+            <div class="card hover:scale-[1.02]">
+                <h4 class="font-semibold text-lg">Smart Alerts</h4>
+                <p class="mt-3 text-slate-300 text-sm">Telegram notifications when bins are full.</p>
             </div>
-            <div class="rounded-2xl bg-slate-900 p-6">
-                <h4 class="font-semibold">AI-Based Routing</h4>
-                <p class="mt-3 text-slate-300">Optimized routes using a trained model for efficient waste collection.</p>
+            <div class="card hover:scale-[1.02]">
+                <h4 class="font-semibold text-lg">Route Optimization</h4>
+                <p class="mt-3 text-slate-300 text-sm">Efficient route planning using intelligent algorithms.</p>
             </div>
         </div>
     </section>
-    <section class="mt-20 max-w-4xl">
+    <section class="max-w-3xl">
         <h3 class="text-3xl font-bold">Technology Stack</h3>
-        <ul class="mt-6 space-y-3 text-slate-300">
-            <li>• Backend: Django + Django REST Framework</li>
-            <li>• Database: PostgreSQL / SQLite</li>
-            <li>• Frontend: HTML, Tailwind CSS</li>
-            <li>• Hardware: ESP8266, Ultrasonic Sensor, GPS Module</li>
-            <li>• Notifications: Telegram Bot API</li>
-            <li>• Intelligence: Route Optimization Model</li>
-        </ul>
+        <div class="mt-8 space-y-4 text-slate-300">
+            <div class="flex justify-between border-b border-white/10 pb-2">
+                <span>Backend</span>
+                <span class="text-white font-medium">Django + DRF</span>
+            </div>
+            <div class="flex justify-between border-b border-white/10 pb-2">
+                <span>Database</span>
+                <span class="text-white font-medium">PostgreSQL / SQLite</span>
+            </div>
+            <div class="flex justify-between border-b border-white/10 pb-2">
+                <span>Frontend</span>
+                <span class="text-white font-medium">HTML + Tailwind</span>
+            </div>
+            <div class="flex justify-between border-b border-white/10 pb-2">
+                <span>Hardware</span>
+                <span class="text-white font-medium">ESP8266 + Sensors + GPS</span>
+            </div>
+            <div class="flex justify-between border-b border-white/10 pb-2">
+                <span>Notifications</span>
+                <span class="text-white font-medium">Telegram Bot API</span>
+            </div>
+            <div class="flex justify-between">
+                <span>Intelligence</span>
+                <span class="text-white font-medium">Route Optimization Model</span>
+            </div>
+        </div>
+    </section>
+    <section class="text-center">
+        <h3 class="text-3xl font-bold">Want to see it in action?</h3>
+        <div class="mt-6 flex justify-center gap-4">
+            <a href="{% url 'login' %}" class="bg-emerald-400 text-black px-6 py-3 rounded-xl font-semibold hover:bg-emerald-300">Login</a>
+            <a href="{% url 'signup' %}" class="border border-white/20 px-6 py-3 rounded-xl hover:bg-white/5">Create Account</a>
+        </div>
     </section>
 </main>
-    <script src='{% static "css/home/about.js" %}'></script>
-{% endblock content %}
+<script src="{% static 'js/home/about.js' %}"></script>
+{% endblock %}

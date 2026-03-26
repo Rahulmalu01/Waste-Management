@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}User Dashboard{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto py-10 space-y-8">
+    <div>
+        <h1 class="text-3xl font-bold">User Dashboard</h1>
+        <p class="text-slate-400 mt-1">Access your services</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="card">
+            <h3 class="font-semibold text-lg">Nearby Bins</h3>
+            <p class="text-slate-400 mt-2">Check bin availability</p>
+        </div>
+        <div class="card">
+            <h3 class="font-semibold text-lg">Report Issue</h3>
+            <p class="text-slate-400 mt-2">Report overflowing bins</p>
+        </div>
+        <div class="card">
+            <h3 class="font-semibold text-lg">My Reports</h3>
+            <p class="text-slate-400 mt-2">Track complaints</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,127 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Route Detail</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-white min-h-screen p-6">
-    <div class="mx-auto max-w-6xl">
-        <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-                <h1 class="text-3xl font-bold">{{ route.route_name }}</h1>
-                <p class="mt-2 text-slate-400">
-                    Status: {{ route.status }} |
-                    Driver: {{ route.assigned_driver|default:"-" }} |
-                    Total Bins: {{ route.total_bins }} |
-                    Started: {{ route.started_at|default:"-" }} |
-                    Completed: {{ route.completed_at|default:"-" }}
-                </p>
-            </div>
-            <div class="flex gap-3">
-                {% if request.user.role == 'DRIVER' %}
-                    <a href="{% url 'assigned_routes' %}" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">Back to My Routes</a>
-                {% else %}
-                    <a href="{% url 'route_list' %}" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">Back to Routes</a>
-                {% endif %}
-            </div>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Route Detail{% endblock %}
+{% block body_class %}bg-slate-950 text-white{% endblock %}
+{% block content %}
+<div class="mx-auto max-w-6xl py-6 px-6">
+    <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-3xl font-bold">{{ route.route_name }}</h1>
+            <p class="mt-2 text-slate-400">
+                Status: {{ route.status }} |
+                Driver: {{ route.assigned_driver|default:"-" }} |
+                Total Bins: {{ route.total_bins }} |
+                Started: {{ route.started_at|default:"-" }} |
+                Completed: {{ route.completed_at|default:"-" }}
+            </p>
         </div>
-        {% if messages %}
-            <div class="mb-6 space-y-3">
-                {% for message in messages %}
-                    <div class="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p class="text-sm text-slate-400">Total Stops</p>
-                <p class="mt-2 text-2xl font-bold">{{ route.total_bins }}</p>
-            </div>
-            <div class="rounded-2xl border border-white/10 bg-emerald-500/10 p-4">
-                <p class="text-sm text-emerald-300">Collected</p>
-                <p class="mt-2 text-2xl font-bold text-emerald-300">{{ route.collected_count }}</p>
-            </div>
-            <div class="rounded-2xl border border-white/10 bg-yellow-500/10 p-4">
-                <p class="text-sm text-yellow-300">Skipped</p>
-                <p class="mt-2 text-2xl font-bold text-yellow-300">{{ route.skipped_count }}</p>
-            </div>
-            <div class="rounded-2xl border border-white/10 bg-sky-500/10 p-4">
-                <p class="text-sm text-sky-300">Pending</p>
-                <p class="mt-2 text-2xl font-bold text-sky-300">{{ route.pending_count }}</p>
-            </div>
-        </div>
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <div class="mb-4">
-                <h2 class="text-2xl font-semibold">Route Stops</h2>
-                <p class="text-sm text-slate-400">Stop-by-stop collection progress</p>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-left">
-                    <thead class="border-b border-white/10">
-                        <tr>
-                            <th class="px-4 py-3">Order</th>
-                            <th class="px-4 py-3">Bin ID</th>
-                            <th class="px-4 py-3">Bin Name</th>
-                            <th class="px-4 py-3">Location</th>
-                            <th class="px-4 py-3">Fill %</th>
-                            <th class="px-4 py-3">Status</th>
-                            <th class="px-4 py-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for stop in route.stops.all %}
-                        <tr class="border-b border-white/10">
-                            <td class="px-4 py-3">{{ stop.stop_order }}</td>
-                            <td class="px-4 py-3">{{ stop.bin.bin_id }}</td>
-                            <td class="px-4 py-3">{{ stop.bin.name }}</td>
-                            <td class="px-4 py-3">{{ stop.bin.location_name|default:"-" }}</td>
-                            <td class="px-4 py-3">{{ stop.bin.fill_percentage }}%</td>
-                            <td class="px-4 py-3">
-                                {% if stop.status == 'COLLECTED' %}
-                                    <span class="rounded-full bg-emerald-500/20 px-3 py-1 text-sm text-emerald-300">COLLECTED</span>
-                                {% elif stop.status == 'SKIPPED' %}
-                                    <span class="rounded-full bg-yellow-500/20 px-3 py-1 text-sm text-yellow-300">SKIPPED</span>
-                                {% else %}
-                                    <span class="rounded-full bg-sky-500/20 px-3 py-1 text-sm text-sky-300">PENDING</span>
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-3">
-                                {% if request.user.role == 'DRIVER' and stop.status == 'PENDING' %}
-                                    <div class="flex flex-wrap gap-2">
-                                        <a href="{% url 'mark_stop_collected' stop.id %}" class="rounded-lg bg-emerald-500/20 px-3 py-2 text-sm text-emerald-300 hover:bg-emerald-500/30">Mark Collected</a>
-                                        <a href="{% url 'mark_stop_skipped' stop.id %}" class="rounded-lg bg-yellow-500/20 px-3 py-2 text-sm text-yellow-300 hover:bg-yellow-500/30">Mark Skipped</a>
-                                    </div>
-                                {% else %}
-                                    <span class="text-sm text-slate-400">No action</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="7" class="px-4 py-6 text-center text-slate-400">No stops available for this route.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5">
-            <h2 class="text-2xl font-semibold">Activity History</h2>
-            <p class="mt-1 text-sm text-slate-400">Route events and driver actions</p>
-            <div class="mt-4 space-y-3">
-                {% for activity in route.activities.all %}
-                    <div class="rounded-xl border border-white/10 bg-slate-900 p-4">
-                        <p class="font-medium">{{ activity.action }}</p>
-                        <p class="mt-1 text-slate-300">{{ activity.message }}</p>
-                        <p class="mt-2 text-sm text-slate-500"> By: {{ activity.user|default:"System" }} | {{ activity.created_at }}</p>
-                    </div>
-                {% empty %}
-                    <p class="text-slate-400">No activity recorded yet.</p>
-                {% endfor %}
-            </div>
+        <div class="flex gap-3">
+            {% if request.user.role == 'DRIVER' %}
+                <a href="{% url 'assigned_routes' %}" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">Back to My Routes</a>
+            {% else %}
+                <a href="{% url 'route_list' %}" class="rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">Back to Routes</a>
+            {% endif %}
         </div>
     </div>
-</body>
-</html>
+    {% if messages %}
+        <div class="mb-6 space-y-3">
+            {% for message in messages %}
+                <div class="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p class="text-sm text-slate-400">Total Stops</p>
+            <p class="mt-2 text-2xl font-bold">{{ route.total_bins }}</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-emerald-500/10 p-4">
+            <p class="text-sm text-emerald-300">Collected</p>
+            <p class="mt-2 text-2xl font-bold text-emerald-300">{{ route.collected_count }}</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-yellow-500/10 p-4">
+            <p class="text-sm text-yellow-300">Skipped</p>
+            <p class="mt-2 text-2xl font-bold text-yellow-300">{{ route.skipped_count }}</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-sky-500/10 p-4">
+            <p class="text-sm text-sky-300">Pending</p>
+            <p class="mt-2 text-2xl font-bold text-sky-300">{{ route.pending_count }}</p>
+        </div>
+    </div>
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div class="mb-4">
+            <h2 class="text-2xl font-semibold">Route Stops</h2>
+            <p class="text-sm text-slate-400">Stop-by-stop collection progress</p>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-left">
+                <thead class="border-b border-white/10">
+                    <tr>
+                        <th class="px-4 py-3">Order</th>
+                        <th class="px-4 py-3">Bin ID</th>
+                        <th class="px-4 py-3">Bin Name</th>
+                        <th class="px-4 py-3">Location</th>
+                        <th class="px-4 py-3">Fill %</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stop in route.stops.all %}
+                    <tr class="border-b border-white/10">
+                        <td class="px-4 py-3">{{ stop.stop_order }}</td>
+                        <td class="px-4 py-3">{{ stop.bin.bin_id }}</td>
+                        <td class="px-4 py-3">{{ stop.bin.name }}</td>
+                        <td class="px-4 py-3">{{ stop.bin.location_name|default:"-" }}</td>
+                        <td class="px-4 py-3">{{ stop.bin.fill_percentage }}%</td>
+                        <td class="px-4 py-3">
+                            {% if stop.status == 'COLLECTED' %}
+                                <span class="rounded-full bg-emerald-500/20 px-3 py-1 text-sm text-emerald-300">COLLECTED</span>
+                            {% elif stop.status == 'SKIPPED' %}
+                                <span class="rounded-full bg-yellow-500/20 px-3 py-1 text-sm text-yellow-300">SKIPPED</span>
+                            {% else %}
+                                <span class="rounded-full bg-sky-500/20 px-3 py-1 text-sm text-sky-300">PENDING</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if request.user.role == 'DRIVER' and stop.status == 'PENDING' %}
+                                <div class="flex flex-wrap gap-2">
+                                    <a href="{% url 'mark_stop_collected' stop.id %}" class="rounded-lg bg-emerald-500/20 px-3 py-2 text-sm text-emerald-300 hover:bg-emerald-500/30">Mark Collected</a>
+                                    <a href="{% url 'mark_stop_skipped' stop.id %}" class="rounded-lg bg-yellow-500/20 px-3 py-2 text-sm text-yellow-300 hover:bg-yellow-500/30">Mark Skipped</a>
+                                </div>
+                            {% else %}
+                                <span class="text-sm text-slate-400">No action</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="px-4 py-6 text-center text-slate-400">No stops available for this route.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5">
+        <h2 class="text-2xl font-semibold">Activity History</h2>
+        <p class="mt-1 text-sm text-slate-400">Route events and driver actions</p>
+        <div class="mt-4 space-y-3">
+            {% for activity in route.activities.all %}
+                <div class="rounded-xl border border-white/10 bg-slate-900 p-4">
+                    <p class="font-medium">{{ activity.action }}</p>
+                    <p class="mt-1 text-slate-300">{{ activity.message }}</p>
+                    <p class="mt-2 text-sm text-slate-500">By: {{ activity.user|default:"System" }} | {{ activity.created_at }}</p>
+                </div>
+            {% empty %}
+                <p class="text-slate-400">No activity recorded yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,34 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirm Collection</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-6">
-    <div class="w-full max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-8">
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Confirm Collection{% endblock %}
+{% block body_class %}bg-slate-950 text-white{% endblock %}
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center p-6">
+    <div class="w-full max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl">
         <h1 class="text-3xl font-bold">Confirm Collection</h1>
-        <p class="mt-3 text-slate-400">
-            Are you sure you want to mark this stop as collected?
-        </p>
-        <div class="mt-6 rounded-xl border border-white/10 bg-slate-900 p-4">
+        <p class="mt-3 text-slate-400">Are you sure you want to mark this stop as collected?</p>
+        <div class="mt-6 rounded-xl border border-white/10 bg-slate-900 p-4 space-y-1">
             <p><strong>Route:</strong> {{ stop.route.route_name }}</p>
             <p><strong>Bin ID:</strong> {{ stop.bin.bin_id }}</p>
             <p><strong>Bin Name:</strong> {{ stop.bin.name }}</p>
             <p><strong>Location:</strong> {{ stop.bin.location_name }}</p>
         </div>
-        <form method="post" class="mt-6 space-y-4">
+        <form method="post" class="mt-6 space-y-5">
             {% csrf_token %}
             <label class="flex items-center gap-3 text-slate-300">
                 <input type="checkbox" name="reset_bin" class="h-4 w-4 rounded border-white/10 bg-slate-900">
                 <span>Reset bin status to EMPTY after collection</span>
             </label>
-            <div class="flex gap-4">
-                <button type="submit" class="rounded-xl bg-emerald-400 px-6 py-3 font-semibold text-slate-950"> Confirm Collected</button>
-                <a href="{% url 'route_detail' stop.route.id %}" class="rounded-xl border border-white/10 px-6 py-3">Cancel</a>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button type="submit" class="w-full sm:w-auto rounded-xl bg-emerald-400 px-6 py-3 font-semibold text-slate-950 hover:bg-emerald-300">✅ Confirm Collected</button>
+                <a href="{% url 'route_detail' stop.route.id %}" class="w-full sm:w-auto text-center rounded-xl border border-white/10 px-6 py-3 hover:bg-white/5">Cancel</a>
             </div>
         </form>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

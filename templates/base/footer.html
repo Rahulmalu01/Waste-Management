@@ -1,5 +1,24 @@
-<footer class="border-t border-white/10 bg-slate-950">
-    <div class="mx-auto max-w-7xl px-6 py-8 text-center text-sm text-slate-400">
-        Smart Waste Management System • Built with Django, IoT devices, GPS tracking, Telegram alerts, and route optimization.
+<footer class="border-t border-white/10 bg-slate-950 mt-12">
+    <div class="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8 text-sm text-slate-400">
+        <div>
+            <h3 class="text-white font-semibold mb-3">Smart Waste</h3>
+            <p>Intelligent waste management system using IoT, GPS tracking, and route optimization to improve efficiency and sustainability.</p>
+        </div>
+        <div>
+            <h3 class="text-white font-semibold mb-3">Quick Links</h3>
+            <ul class="space-y-2">
+                <li><a href="{% url 'home' %}" class="hover:text-white">Home</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-white">Login</a></li>
+                <li><a href="{% url 'signup' %}" class="hover:text-white">Signup</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="text-white font-semibold mb-3">Technology</h3>
+            <p>
+                Built with Django, IoT devices, GPS tracking, Telegram alerts,
+                and smart route optimization algorithms.
+            </p>
+        </div>
     </div>
+    <div class="text-center text-xs text-slate-500 pb-6">© 2026 Smart Waste Management System. All rights reserved.</div>
 </footer>

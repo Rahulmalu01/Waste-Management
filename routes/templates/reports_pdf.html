@@ -1,21 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Waste Management Report</title>
-    <style>
-        body { font-family: Helvetica, Arial, sans-serif; font-size: 11px; }
-        h1, h2 { margin-bottom: 8px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
-        th, td { border: 1px solid #999; padding: 6px; text-align: left; }
-        .section { margin-bottom: 20px; }
-    </style>
-</head>
-<body>
-    <h1>Waste Management Report</h1>
-
+{% extends "base.html" %}
+{% block title %}Waste Management Report{% endblock %}
+{% block content %}
+<style>
+    body { font-family: Helvetica, Arial, sans-serif; font-size: 11px; }
+    h1, h2 { margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+    th, td { border: 1px solid #999; padding: 6px; text-align: left; }
+    .section { margin-bottom: 20px; }
+</style>
+<div class="max-w-5xl mx-auto py-6">
+    <h1 class="text-2xl font-bold mb-4">Waste Management Report</h1>
     <div class="section">
-        <h2>Summary</h2>
+        <h2 class="text-xl font-semibold">Summary</h2>
         <table>
             <tr><th>Total Routes</th><td>{{ summary.total_routes }}</td></tr>
             <tr><th>Completed Routes</th><td>{{ summary.completed_routes }}</td></tr>
@@ -25,9 +21,8 @@
             <tr><th>Average Fill Level</th><td>{{ summary.average_fill_level }}%</td></tr>
         </table>
     </div>
-
     <div class="section">
-        <h2>Routes</h2>
+        <h2 class="text-xl font-semibold">Routes</h2>
         <table>
             <thead>
                 <tr>
@@ -47,13 +42,16 @@
                     <td>{{ route.assigned_driver|default:"-" }}</td>
                     <td>{{ route.total_bins }}</td>
                 </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">No routes available</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-
     <div class="section">
-        <h2>Driver Summary</h2>
+        <h2 class="text-xl font-semibold">Driver Summary</h2>
         <table>
             <thead>
                 <tr>
@@ -73,9 +71,13 @@
                     <td>{{ driver.collected_stops_count }}</td>
                     <td>{{ driver.skipped_stops_count }}</td>
                 </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">No driver data available</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

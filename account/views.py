@@ -5,7 +5,6 @@ from django.shortcuts import render, redirect
 from .forms import CustomSignupForm, CustomUserUpdateForm
 from django.urls import reverse_lazy
 
-
 def redirect_user_by_role(user):
     if user.role == 'ADMIN':
         return 'admin_dashboard'
@@ -15,19 +14,17 @@ def redirect_user_by_role(user):
         return 'driver_dashboard'
     elif user.role == 'TECHNICIAN':
         return 'technician_dashboard'
-    return 'profile'
+    else:
+        return 'user_dashboard'
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
-
     def get_success_url(self):
         return reverse_lazy('role_redirect')
-
 
 def signup_view(request):
     if request.user.is_authenticated:
         return redirect(redirect_user_by_role(request.user))
-
     if request.method == 'POST':
         form = CustomSignupForm(request.POST)
         if form.is_valid():
@@ -38,9 +35,7 @@ def signup_view(request):
             return redirect('profile')
     else:
         form = CustomSignupForm()
-
     return render(request, 'signup.html', {'form': form})
-
 
 @login_required
 def profile_view(request):
@@ -51,14 +46,11 @@ def profile_view(request):
             return redirect('profile')
     else:
         form = CustomUserUpdateForm(instance=request.user)
-
     return render(request, 'profile.html', {'form': form})
-
 
 @login_required
 def role_redirect_view(request):
     return redirect(redirect_user_by_role(request.user))
-
 
 @login_required
 def admin_dashboard(request):
@@ -66,13 +58,11 @@ def admin_dashboard(request):
         return redirect('role_redirect')
     return render(request, 'accounts/admin_dashboard.html')
 
-
 @login_required
 def manager_dashboard(request):
     if request.user.role != 'MANAGER':
         return redirect('role_redirect')
     return render(request, 'accounts/manager_dashboard.html')
-
 
 @login_required
 def driver_dashboard(request):
@@ -80,9 +70,14 @@ def driver_dashboard(request):
         return redirect('role_redirect')
     return render(request, 'accounts/driver_dashboard.html')
 
-
 @login_required
 def technician_dashboard(request):
     if request.user.role != 'TECHNICIAN':
         return redirect('role_redirect')
     return render(request, 'accounts/technician_dashboard.html')
+
+@login_required
+def user_dashboard(request):
+    if request.user.role != 'TECHNICIAN':
+        return redirect('role_redirect')
+    return render(request, 'accounts/user_dashboard.html')

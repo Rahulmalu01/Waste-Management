@@ -32,7 +32,7 @@ def route_list_view(request):
     if request.user.role not in ['ADMIN', 'MANAGER']:
         return redirect('role_redirect')
     routes = Route.objects.prefetch_related('stops').order_by('-created_at')
-    return render(request, 'routes/route_list.html', {'routes': routes})
+    return render(request, 'route_list.html', {'routes': routes})
 
 @login_required
 def generate_route_view(request):
@@ -40,11 +40,11 @@ def generate_route_view(request):
         return redirect('role_redirect')
     if request.method == 'POST':
         route, message = create_optimized_route(created_by=request.user)
-        return render(request, 'routes/generate_result.html', {
+        return render(request, 'generate_result.html', {
             'route': route,
             'message': message,
         })
-    return render(request, 'routes/generate_route.html')
+    return render(request, 'generate_route.html')
 
 @login_required
 def assign_route_view(request, route_id):
@@ -61,7 +61,7 @@ def assign_route_view(request, route_id):
             return redirect('route_list')
     else:
         form = RouteAssignmentForm(instance=route)
-    return render(request, 'routes/assign_route.html', {
+    return render(request, 'assign_route.html', {
         'route': route,
         'form': form,
     })
@@ -71,17 +71,17 @@ def assigned_routes_view(request):
     if request.user.role != 'DRIVER':
         return redirect('role_redirect')
     routes = Route.objects.filter(assigned_driver=request.user).prefetch_related('stops').order_by('-created_at')
-    return render(request, 'routes/assigned_routes.html', {'routes': routes})
+    return render(request, 'assigned_routes.html', {'routes': routes})
 
 @login_required
 def route_detail_view(request, route_id):
-    route = get_object_or_404(Route.objects.prefetch_related('stops__bin'), id=route_id)
+    route = get_object_or_404(Route.objects.prefetch_related('stops__bin', 'activities'), id=route_id)
     if request.user.role == 'DRIVER':
         if route.assigned_driver != request.user:
             return redirect('role_redirect')
     elif request.user.role not in ['ADMIN', 'MANAGER']:
         return redirect('role_redirect')
-    return render(request, 'routes/route_detail.html', {'route': route})
+    return render(request, 'route_detail.html', {'route': route})
 
 @login_required
 def mark_stop_collected_view(request, stop_id):
@@ -98,7 +98,7 @@ def mark_stop_collected_view(request, stop_id):
             f"Stop marked as collected. Route status: {progress['route_status']}"
         )
         return redirect('route_detail', route_id=stop.route.id)
-    return render(request, 'routes/confirm_collect.html', {'stop': stop})
+    return render(request, 'confirm_collect.html', {'stop': stop})
 
 @login_required
 def mark_stop_skipped_view(request, stop_id):
@@ -115,7 +115,7 @@ def mark_stop_skipped_view(request, stop_id):
             f"Stop marked as skipped. Route status: {progress['route_status']}"
         )
         return redirect('route_detail', route_id=stop.route.id)
-    return render(request, 'routes/confirm_skip.html', {'stop': stop})
+    return render(request, 'confirm_skip.html', {'stop': stop})
 
 @login_required
 def analytics_dashboard_view(request):
@@ -222,7 +222,7 @@ def analytics_dashboard_view(request):
         'driver_collected_data': driver_collected_data,
         'driver_skipped_data': driver_skipped_data,
     }
-    return render(request, 'routes/analytics_dashboard.html', context)
+    return render(request, 'analytics_dashboard.html', context)
 
 def get_filtered_report_data(request):
     form = ReportFilterForm(request.GET or None)
@@ -297,26 +297,21 @@ def reports_home_view(request):
         return redirect('role_redirect')
 
     context = get_filtered_report_data(request)
-    return render(request, 'routes/reports_home.html', context)
+    return render(request, 'reports_home.html', context)
 
 
 @login_required
 def export_reports_pdf_view(request):
     if request.user.role not in ['ADMIN', 'MANAGER']:
         return redirect('role_redirect')
-
     context = get_filtered_report_data(request)
-    template = get_template('routes/reports_pdf.html')
+    template = get_template('reports_pdf.html')
     html = template.render(context)
-
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="waste_management_report.pdf"'
-
     pisa_status = pisa.CreatePDF(io.BytesIO(html.encode('utf-8')), dest=response)
-
     if pisa_status.err:
         return HttpResponse('Error generating PDF report', status=500)
-
     return response
 
 
@@ -324,33 +319,26 @@ def export_reports_pdf_view(request):
 def export_reports_excel_view(request):
     if request.user.role not in ['ADMIN', 'MANAGER']:
         return redirect('role_redirect')
-
     context = get_filtered_report_data(request)
     routes = context['routes']
     stops = context['stops']
     summary = context['summary']
-
     workbook = openpyxl.Workbook()
-
     summary_sheet = workbook.active
     summary_sheet.title = 'Summary'
-
     summary_sheet['A1'] = 'Waste Management Report Summary'
     summary_sheet['A1'].font = Font(bold=True, size=14)
-
     row = 3
     for key, value in summary.items():
         summary_sheet[f'A{row}'] = key.replace('_', ' ').title()
         summary_sheet[f'B{row}'] = value
         row += 1
-
     routes_sheet = workbook.create_sheet(title='Routes')
     headers = ['Route Name', 'Date', 'Status', 'Driver', 'Total Bins', 'Distance (km)', 'Created By']
     for col_num, header in enumerate(headers, 1):
         cell = routes_sheet.cell(row=1, column=col_num)
         cell.value = header
         cell.font = Font(bold=True)
-
     for row_num, route in enumerate(routes, 2):
         routes_sheet.cell(row=row_num, column=1, value=route.route_name)
         routes_sheet.cell(row=row_num, column=2, value=str(route.date))
@@ -359,14 +347,12 @@ def export_reports_excel_view(request):
         routes_sheet.cell(row=row_num, column=5, value=route.total_bins)
         routes_sheet.cell(row=row_num, column=6, value=route.total_distance_km)
         routes_sheet.cell(row=row_num, column=7, value=str(route.created_by) if route.created_by else '-')
-
     stops_sheet = workbook.create_sheet(title='Route Stops')
     stop_headers = ['Route', 'Order', 'Bin ID', 'Bin Name', 'Location', 'Stop Status', 'Driver']
     for col_num, header in enumerate(stop_headers, 1):
         cell = stops_sheet.cell(row=1, column=col_num)
         cell.value = header
         cell.font = Font(bold=True)
-
     for row_num, stop in enumerate(stops, 2):
         stops_sheet.cell(row=row_num, column=1, value=stop.route.route_name)
         stops_sheet.cell(row=row_num, column=2, value=stop.stop_order)
@@ -379,7 +365,6 @@ def export_reports_excel_view(request):
             column=7,
             value=str(stop.route.assigned_driver) if stop.route.assigned_driver else '-'
         )
-
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
@@ -395,7 +380,7 @@ def printable_reports_view(request):
         return redirect('role_redirect')
 
     context = get_filtered_report_data(request)
-    return render(request, 'routes/reports_print.html', context)
+    return render(request, 'reports_print.html', context)
 
 @login_required
 def send_manual_report_view(request, report_type):
@@ -458,6 +443,9 @@ def get_driver_location(request, driver_id):
 def live_map_view(request, route_id):
     route = Route.objects.prefetch_related('stops__bin').get(id=route_id)
 
-    return render(request, 'routes/live_map.html', {
+    if request.user.role == 'DRIVER' and route.assigned_driver != request.user:
+        return redirect('role_redirect')
+
+    return render(request, 'live_map.html', {
         'route': route
     })

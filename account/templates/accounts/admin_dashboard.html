@@ -1,41 +1,35 @@
 {% extends "base.html" %}
 {% block title %}Admin Dashboard{% endblock %}
-{% block body_class %}{% endblock %}
 {% block content %}
-<div class="mx-auto max-w-5xl p-6">
-    <div class="flex items-center justify-between mb-8">
-        <div>
-            <h1 class="text-3xl font-bold">Admin Dashboard</h1>
-            <p class="text-slate-400">Welcome, {{ request.user.username }}</p>
-        </div>
-        <a href="{% url 'logout' %}" class="rounded-xl border border-slate-300 dark:border-white/10 px-4 py-2 hover:bg-slate-100 dark:hover:bg-white/5">
-            Logout
-        </a>
+<div class="max-w-7xl mx-auto py-10 space-y-8">
+    <div>
+        <h1 class="text-3xl font-bold">Admin Dashboard</h1>
+        <p class="text-slate-400 mt-1">Overview of system performance</p>
     </div>
-    <div class="grid gap-6 md:grid-cols-3">
-        <a href="{% url 'bin_dashboard' %}" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
-            <h2 class="text-xl font-semibold">Bin Monitoring</h2>
-            <p class="mt-2 text-slate-300">Track live bin status, fill levels, and last activity.</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="{% url 'bin_dashboard' %}" class="card hover:scale-[1.02]">
+            <h3 class="font-semibold text-lg">Bin Monitoring</h3>
+            <p class="text-slate-400 text-sm mt-2">Track bin fill levels</p>
         </a>
-        <a href="{% url 'alert_list' %}" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
-            <h2 class="text-xl font-semibold">Live Alerts</h2>
-            <p class="mt-2 text-slate-300">Review full-bin alerts and pending operational issues.</p>
+        <a href="{% url 'alert_list' %}" class="card">
+            <h3 class="font-semibold text-lg">Live Alerts</h3>
+            <p class="text-slate-400 text-sm mt-2">View active alerts</p>
         </a>
-        <a href="{% url 'bin_map' %}" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
-            <h2 class="text-xl font-semibold">Map View</h2>
-            <p class="mt-2 text-slate-300">Visualize bins on the map with live status markers.</p>
+        <a href="{% url 'bin_map' %}" class="card">
+            <h3 class="font-semibold text-lg">Map View</h3>
+            <p class="text-slate-400 text-sm mt-2">Visualize bin locations</p>
         </a>
-        <a href="#" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
-            <h2 class="text-xl font-semibold">Routes</h2>
-            <p class="mt-2 text-slate-300">Generate and assign optimized collection routes.</p>
+        <a href="#" class="card">
+            <h3 class="font-semibold text-lg">Routes</h3>
+            <p class="text-slate-400 text-sm mt-2">Manage routes</p>
         </a>
-        <a href="{% url 'analytics_dashboard' %}" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
-            <h2 class="text-xl font-semibold">Analytics</h2>
-            <p class="mt-2 text-slate-300">View reporting, problem bins, and driver performance.</p>
+        <a href="{% url 'analytics_dashboard' %}" class="card">
+            <h3 class="font-semibold text-lg">Analytics</h3>
+            <p class="text-slate-400 text-sm mt-2">Insights & trends</p>
         </a>
-        <a href="{% url 'reports_home' %}" class="rounded-2xl bg-white/5 p-6 border border-white/10 block hover:bg-white/10">
-            <h2 class="text-xl font-semibold">Reports</h2>
-            <p class="mt-2 text-slate-300">Export PDF, Excel, and printable management summaries.</p>
+        <a href="{% url 'reports_home' %}" class="card">
+            <h3 class="font-semibold text-lg">Reports</h3>
+            <p class="text-slate-400 text-sm mt-2">Generate reports</p>
         </a>
     </div>
 </div>
