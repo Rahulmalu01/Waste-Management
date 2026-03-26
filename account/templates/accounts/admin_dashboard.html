@@ -7,6 +7,10 @@
         <p class="text-slate-400 mt-1">Overview of system performance</p>
     </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="{% url 'admin_user_roles' %}" class="card">
+            <h3 class="font-semibold text-lg">User Roles</h3>
+            <p class="text-slate-400 text-sm mt-2">Manage user roles</p>
+        </a>
         <a href="{% url 'bin_dashboard' %}" class="card hover:scale-[1.02]">
             <h3 class="font-semibold text-lg">Bin Monitoring</h3>
             <p class="text-slate-400 text-sm mt-2">Track bin fill levels</p>
@@ -19,7 +23,7 @@
             <h3 class="font-semibold text-lg">Map View</h3>
             <p class="text-slate-400 text-sm mt-2">Visualize bin locations</p>
         </a>
-        <a href="#" class="card">
+        <a href="{% url 'route_list' %}" class="card">
             <h3 class="font-semibold text-lg">Routes</h3>
             <p class="text-slate-400 text-sm mt-2">Manage routes</p>
         </a>

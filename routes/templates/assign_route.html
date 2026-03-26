@@ -1,33 +1,79 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block title %}Assign Route{% endblock %}
+
 {% block body_class %}bg-slate-950 text-white{% endblock %}
+
 {% block content %}
-<div class="mx-auto max-w-3xl p-6">
-    <div class="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl">
-        <h1 class="text-3xl font-bold">Assign Route</h1>
-        <p class="mt-2 text-slate-400">Assign this route to a driver</p>
-        <div class="mt-6 rounded-xl border border-white/10 bg-slate-900 p-4">
-            <p><strong>Route:</strong> {{ route.route_name }}</p>
-            <p><strong>Total Bins:</strong> {{ route.total_bins }}</p>
-            <p><strong>Status:</strong> {{ route.status }}</p>
-        </div>
-        <form method="post" class="mt-6 space-y-5">
-            {% csrf_token %}
-            {% for field in form %}
-            <div>
-                <label class="block text-sm mb-2 text-slate-300">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <p class="text-red-400 text-xs mt-1">{{ field.errors.0 }}</p>
-                {% endif %}
+    <!-- Main Wrapper -->
+    <div class="mx-auto max-w-3xl p-6">
+        
+        <!-- Content Card -->
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl">
+            
+            <!-- Header Section -->
+            <h1 class="text-3xl font-bold">Assign Route</h1>
+            <p class="mt-2 text-slate-400">Assign this route to a driver</p>
+            
+            <!-- Route Info Section -->
+            <div class="mt-6 rounded-xl border border-white/10 bg-slate-900 p-4">
+                <p><strong>Route:</strong> {{ route.route_name }}</p>
+                <p><strong>Total Bins:</strong> {{ route.total_bins }}</p>
+                <p><strong>Status:</strong> {{ route.status }}</p>
             </div>
-            {% endfor %}
-            <button type="submit" class="w-full rounded-xl bg-emerald-400 px-6 py-3 font-semibold text-slate-950 hover:bg-emerald-300">Assign Route</button>
-        </form>
-        <div class="mt-6">
-            <a href="{% url 'routes_list' %}" class="text-sky-300 hover:underline">← Back to route list</a>
+
+            <!-- Form Section -->
+            <form method="post" class="mt-6 space-y-5">
+                {% csrf_token %}
+                
+                <!-- Form Fields Loop -->
+                {% for field in form %}
+                    <div class="mb-4">
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-300">
+                            {{ field.label }}
+                        </label>
+                        <div class="mt-1">
+                            <!-- Improved Dropdown Styling -->
+                            {% if field.field.widget.input_type == "select" %}
+                                <select 
+                                    name="{{ field.name }}" 
+                                    id="{{ field.id_for_label }}" 
+                                    class="block w-full px-4 py-2 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+                                >
+                                    {% for option in field.field.choices %}
+                                        <option value="{{ option.0 }}" {% if option.0 == field.value %}selected{% endif %}>
+                                            {{ option.1 }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+                        </div>
+
+                        <!-- Field Error Handling -->
+                        {% if field.errors %}
+                            <p class="text-red-400 text-xs mt-1">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    class="w-full rounded-xl bg-emerald-400 px-6 py-3 font-semibold text-slate-950 hover:bg-emerald-300"
+                >
+                    Assign Route
+                </button>
+            </form>
+
+            <!-- Back to Route List Link -->
+            <div class="mt-6">
+                <a href="{% url 'route_list' %}" class="text-sky-300 hover:underline">
+                    ← Back to route list
+                </a>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

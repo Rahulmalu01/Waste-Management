@@ -27,8 +27,8 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-key")
 OPENROUTESERVICE_API_KEY = os.getenv("OPENROUTESERVICE_API_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-# DEBUG = False
+# DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "yourdomain.com", 
@@ -174,6 +174,5 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 MANAGER_REPORT_EMAILS = [
-    'manager1@example.com',
-    'admin@example.com',
+    'anushkatikande55@gmail.com',
 ]

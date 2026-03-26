@@ -1,33 +1,35 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
     const btn = document.getElementById("menu-btn");
     const menu = document.getElementById("menu");
     const themeToggle = document.getElementById("theme-toggle");
+
     if (btn && menu) {
         btn.addEventListener("click", () => {
             menu.classList.toggle("hidden");
             menu.classList.toggle("animate-fadeIn");
         });
     }
-    function setTheme(theme) {
-        const body = document.getElementById("body");
+
+    function applyTheme(theme) {
+        const html = document.documentElement;
 
         if (theme === "light") {
-            body.classList.remove("bg-slate-900", "text-white");
-            body.classList.add("bg-white", "text-black");
+            html.classList.remove("dark");
             if (themeToggle) themeToggle.textContent = "☀️";
         } else {
-            body.classList.remove("bg-white", "text-black");
-            body.classList.add("bg-slate-900", "text-white");
+            html.classList.add("dark");
             if (themeToggle) themeToggle.textContent = "🌙";
         }
     }
+
     const savedTheme = localStorage.getItem("theme") || "dark";
-    setTheme(savedTheme);
+    applyTheme(savedTheme);
+
     if (themeToggle) {
         themeToggle.addEventListener("click", () => {
-            const current = localStorage.getItem("theme") === "light" ? "dark" : "light";
+            const current = document.documentElement.classList.contains("dark") ? "light" : "dark";
             localStorage.setItem("theme", current);
-            setTheme(current);
+            applyTheme(current);
         });
     }
 });

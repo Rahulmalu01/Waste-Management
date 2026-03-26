@@ -35,7 +35,7 @@ def update_offline_bins():
 def bin_list_view(request):
     update_offline_bins()
     bins = Bin.objects.all().order_by('-updated_at')
-    return render(request, 'bins/bin_list.html', {'bins': bins})
+    return render(request, 'bin_list.html', {'bins': bins})
 
 @login_required
 def bin_dashboard_view(request):
@@ -53,7 +53,7 @@ def bin_dashboard_view(request):
         'active_alerts': Alert.objects.filter(status='ACTIVE').count(),
         'resolved_alerts': Alert.objects.filter(status='RESOLVED').count(),
     }
-    return render(request, 'bins/dashboard.html', context)
+    return render(request, 'dashboard.html', context)
 
 @login_required
 def bin_map_view(request):
@@ -73,7 +73,7 @@ def bin_map_view(request):
             'status': bin_obj.status,
             'last_seen': bin_obj.last_seen.strftime('%Y-%m-%d %H:%M:%S') if bin_obj.last_seen else None,
         })
-    return render(request, 'bins/bin_map.html', {'bins': bin_data})
+    return render(request, 'bin_map.html', {'bins': bin_data})
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')

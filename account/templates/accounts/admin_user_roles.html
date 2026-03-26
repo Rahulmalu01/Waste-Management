@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Manage User Roles{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-10">
+    <h1 class="text-3xl font-bold mb-6">Manage User Roles</h1>
+    <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                    <th class="py-2">Username</th>
+                    <th class="py-2">Email</th>
+                    <th class="py-2">Current Role</th>
+                    <th class="py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr class="border-b border-slate-100 dark:border-slate-600">
+                    <td class="py-2">{{ user.username }}</td>
+                    <td class="py-2">{{ user.email }}</td>
+                    <td class="py-2">{{ user.get_role_display }}</td>
+                    <td class="py-2">
+                        <a href="{% url 'admin_edit_user_role' user.id %}" class="text-blue-500 hover:text-blue-700">Edit Role</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,24 +1,30 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block title %}User Dashboard{% endblock %}
 {% block content %}
 <div class="max-w-7xl mx-auto py-10 space-y-8">
     <div>
-        <h1 class="text-3xl font-bold">User Dashboard</h1>
-        <p class="text-slate-400 mt-1">Access your services</p>
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">User Dashboard</h1>
+        <p class="text-slate-500 dark:text-slate-300 mt-1">Access your services</p>
     </div>
+
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="card">
-            <h3 class="font-semibold text-lg">Nearby Bins</h3>
-            <p class="text-slate-400 mt-2">Check bin availability</p>
-        </div>
-        <div class="card">
-            <h3 class="font-semibold text-lg">Report Issue</h3>
-            <p class="text-slate-400 mt-2">Report overflowing bins</p>
-        </div>
-        <div class="card">
-            <h3 class="font-semibold text-lg">My Reports</h3>
-            <p class="text-slate-400 mt-2">Track complaints</p>
-        </div>
+        <a href="{% url 'nearby_bins' %}" class="card block cursor-pointer hover:border-blue-400 dark:hover:border-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+            <h3 class="font-semibold text-lg text-slate-900 dark:text-white">Nearby Bins</h3>
+            <p class="text-slate-500 dark:text-slate-300 mt-2">Check bin availability in your area</p>
+            <span class="mt-4 inline-flex items-center rounded-md px-2.5 py-1.5 text-sm font-medium text-blue-700 dark:text-cyan-100 bg-blue-100 dark:bg-cyan-900/35">View bins</span>
+        </a>
+
+        <a href="{% url 'report_issue' %}" class="card block cursor-pointer hover:border-blue-400 dark:hover:border-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+            <h3 class="font-semibold text-lg text-slate-900 dark:text-white">Report Issue</h3>
+            <p class="text-slate-500 dark:text-slate-300 mt-2">Report overflowing or damaged bins quickly</p>
+            <span class="mt-4 inline-flex items-center rounded-md px-2.5 py-1.5 text-sm font-medium text-blue-700 dark:text-cyan-100 bg-blue-100 dark:bg-cyan-900/35">Create report</span>
+        </a>
+
+        <a href="{% url 'my_reports' %}" class="card block cursor-pointer hover:border-blue-400 dark:hover:border-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+            <h3 class="font-semibold text-lg text-slate-900 dark:text-white">My Reports</h3>
+            <p class="text-slate-500 dark:text-slate-300 mt-2">Track the status of submitted complaints</p>
+            <span class="mt-4 inline-flex items-center rounded-md px-2.5 py-1.5 text-sm font-medium text-blue-700 dark:text-cyan-100 bg-blue-100 dark:bg-cyan-900/35">View reports</span>
+        </a>
     </div>
 </div>
 {% endblock %}

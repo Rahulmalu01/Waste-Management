@@ -2,24 +2,6 @@
 {% block title %}Driver Dashboard{% endblock %}
 {% block content %}
 <div class="max-w-7xl mx-auto py-10 space-y-8">
-    <div>
-        <h1 class="text-3xl font-bold">Driver Dashboard</h1>
-        <p class="text-slate-400 mt-1">Manage your routes and collections</p>
-    </div>
-    <div class="grid sm:grid-cols-3 gap-6">
-        <div class="card">
-            <p class="text-slate-400 text-sm">Today's Route</p>
-            <h2 class="text-xl font-bold mt-2">Assigned</h2>
-        </div>
-        <div class="card">
-            <p class="text-slate-400 text-sm">Pending Bins</p>
-            <h2 class="text-xl font-bold mt-2">6</h2>
-        </div>
-        <div class="card">
-            <p class="text-slate-400 text-sm">Completed</p>
-            <h2 class="text-xl font-bold mt-2 text-emerald-400">12</h2>
-        </div>
-    </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="card">
             <h3 class="font-semibold">Assigned Route</h3>
@@ -33,7 +15,7 @@
             <h3 class="font-semibold">Collection Status</h3>
             <p class="text-slate-400 text-sm mt-2">Track progress</p>
         </div>
-        <a href="/routes/my-routes/" class="card">
+        <a href="{% url 'assigned_routes' %}" class="card">
             <h3 class="font-semibold">My Routes</h3>
             <p class="text-slate-400 text-sm mt-2">View all routes</p>
         </a>

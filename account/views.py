@@ -2,8 +2,10 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
-from .forms import CustomSignupForm, CustomUserUpdateForm
+from .forms import CustomSignupForm, CustomUserUpdateForm, RoleUpdateForm
 from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
+from .models import CustomUser
 
 def redirect_user_by_role(user):
     if user.role == 'ADMIN':
@@ -59,6 +61,27 @@ def admin_dashboard(request):
     return render(request, 'accounts/admin_dashboard.html')
 
 @login_required
+def admin_user_roles(request):
+    if request.user.role != 'ADMIN':
+        return redirect('role_redirect')
+    users = CustomUser.objects.all()
+    return render(request, 'accounts/admin_user_roles.html', {'users': users})
+
+@login_required
+def admin_edit_user_role(request, user_id):
+    if request.user.role != 'ADMIN':
+        return redirect('role_redirect')
+    user = get_object_or_404(CustomUser, id=user_id)
+    if request.method == 'POST':
+        form = RoleUpdateForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_user_roles')
+    else:
+        form = RoleUpdateForm(instance=user)
+    return render(request, 'accounts/admin_edit_user_role.html', {'form': form, 'user': user})
+
+@login_required
 def manager_dashboard(request):
     if request.user.role != 'MANAGER':
         return redirect('role_redirect')
@@ -78,6 +101,6 @@ def technician_dashboard(request):
 
 @login_required
 def user_dashboard(request):
-    if request.user.role != 'TECHNICIAN':
+    if request.user.role != 'GENERAL':
         return redirect('role_redirect')
     return render(request, 'accounts/user_dashboard.html')

@@ -3,6 +3,7 @@
 {% block body_class %}bg-slate-950 text-white{% endblock %}
 {% block content %}
 <div class="max-w-7xl mx-auto py-6">
+    <!-- Header Section -->
     <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
             <h1 class="text-3xl font-bold">Report Center</h1>
@@ -16,20 +17,98 @@
             <a href="{% url 'send_manual_report' 'weekly' %}" class="rounded-xl bg-indigo-500/20 px-4 py-2 text-indigo-300">Send Weekly Report</a>
         </div>
     </div>
+   <!-- Filters Section -->
     <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
         <h2 class="text-xl font-semibold">Filters</h2>
         <form method="get" class="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-            <div>{{ form.start_date.label_tag }} {{ form.start_date }}</div>
-            <div>{{ form.end_date.label_tag }} {{ form.end_date }}</div>
-            <div>{{ form.driver.label_tag }} {{ form.driver }}</div>
-            <div>{{ form.bin_obj.label_tag }} {{ form.bin_obj }}</div>
-            <div>{{ form.route_status.label_tag }} {{ form.route_status }}</div>
+            <!-- Start Date Field -->
+            <div class="flex flex-col">
+                {{ form.start_date.label_tag }}
+                <div class="relative">
+                    {{ form.start_date }}
+                    <!-- Custom Dropdown Arrow -->
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <!-- End Date Field -->
+            <div class="flex flex-col">
+                {{ form.end_date.label_tag }}
+                <div class="relative">
+                    {{ form.end_date }}
+                    <!-- Custom Dropdown Arrow -->
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+           <!-- Driver Field -->
+            <div class="flex flex-col space-y-2">
+                <label for="{{ form.driver.id_for_label }}" class="text-sm text-slate-300">{{ form.driver.label }}</label>
+                <div class="relative">
+                    <div class="border border-white/20 rounded-lg overflow-hidden">
+                        {{ form.driver }}
+                    </div>
+                    <!-- Custom Dropdown Arrow -->
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </div>
+                </div>
+                {% if form.driver.errors %}
+                    <p class="text-red-400 text-xs mt-1">{{ form.driver.errors.0 }}</p>
+                {% endif %}
+            </div>
+            <!-- Bin Object Field -->
+            <div class="flex flex-col space-y-2">
+                <label for="{{ form.bin_obj.id_for_label }}" class="text-sm text-slate-300">{{ form.bin_obj.label }}</label>
+                <div class="relative">
+                    <div class="border border-white/20 rounded-lg overflow-hidden">
+                        {{ form.bin_obj }}
+                    </div>
+                    <!-- Custom Dropdown Arrow -->
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </div>
+                </div>
+                {% if form.bin_obj.errors %}
+                    <p class="text-red-400 text-xs mt-1">{{ form.bin_obj.errors.0 }}</p>
+                {% endif %}
+            </div>
+            <!-- Route Status Field -->
+            <div class="flex flex-col space-y-2">
+                <label for="{{ form.route_status.id_for_label }}" class="text-sm text-slate-300">{{ form.route_status.label }}</label>
+                <div class="relative">
+                    <div class="border border-white/20 rounded-lg overflow-hidden">
+                        {{ form.route_status }}
+                    </div>
+                    <!-- Custom Dropdown Arrow -->
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </div>
+                </div>
+                {% if form.route_status.errors %}
+                    <p class="text-red-400 text-xs mt-1">{{ form.route_status.errors.0 }}</p>
+                {% endif %}
+            </div>
+            <!-- Action Buttons -->
             <div class="xl:col-span-5 flex gap-3">
-                <button type="submit" class="rounded-xl bg-emerald-400 px-5 py-2 font-semibold text-slate-950">Apply Filters</button>
-                <a href="{% url 'reports_home' %}" class="rounded-xl border border-white/10 px-5 py-2">Reset</a>
+                <button type="submit" class="rounded-xl bg-emerald-400 px-5 py-2 font-semibold text-slate-950 hover:bg-emerald-500">Apply Filters</button>
+                <a href="{% url 'reports_home' %}" class="rounded-xl border border-white/10 px-5 py-2 text-slate-300 hover:text-white">Reset</a>
             </div>
         </form>
     </div>
+    <!-- Summary Section -->
     <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
             <p class="text-sm text-slate-400">Total Routes</p>
@@ -48,7 +127,9 @@
             <p class="mt-2 text-3xl font-bold text-sky-300">{{ summary.total_collections }}</p>
         </div>
     </div>
+    <!-- Routes & Driver Summary Section -->
     <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <!-- Routes Table -->
         <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
             <h2 class="text-2xl font-semibold">Routes</h2>
             <div class="mt-4 overflow-x-auto">
@@ -63,21 +144,22 @@
                     </thead>
                     <tbody>
                         {% for route in routes %}
-                        <tr class="border-b border-white/10">
-                            <td class="px-4 py-3">{{ route.route_name }}</td>
-                            <td class="px-4 py-3">{{ route.date }}</td>
-                            <td class="px-4 py-3">{{ route.status }}</td>
-                            <td class="px-4 py-3">{{ route.assigned_driver|default:"-" }}</td>
-                        </tr>
+                            <tr class="border-b border-white/10">
+                                <td class="px-4 py-3">{{ route.route_name }}</td>
+                                <td class="px-4 py-3">{{ route.date }}</td>
+                                <td class="px-4 py-3">{{ route.status }}</td>
+                                <td class="px-4 py-3">{{ route.assigned_driver|default:"-" }}</td>
+                            </tr>
                         {% empty %}
-                        <tr>
-                            <td colspan="4" class="px-4 py-6 text-center text-slate-400">No routes found.</td>
-                        </tr>
+                            <tr>
+                                <td colspan="4" class="px-4 py-6 text-center text-slate-400">No routes found.</td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+        <!-- Driver Summary Table -->
         <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
             <h2 class="text-2xl font-semibold">Driver Summary</h2>
             <div class="mt-4 overflow-x-auto">
@@ -93,17 +175,17 @@
                     </thead>
                     <tbody>
                         {% for driver in driver_summary %}
-                        <tr class="border-b border-white/10">
-                            <td class="px-4 py-3">{{ driver.username }}</td>
-                            <td class="px-4 py-3">{{ driver.assigned_routes_count }}</td>
-                            <td class="px-4 py-3">{{ driver.completed_routes_count }}</td>
-                            <td class="px-4 py-3">{{ driver.collected_stops_count }}</td>
-                            <td class="px-4 py-3">{{ driver.skipped_stops_count }}</td>
-                        </tr>
+                            <tr class="border-b border-white/10">
+                                <td class="px-4 py-3">{{ driver.username }}</td>
+                                <td class="px-4 py-3">{{ driver.assigned_routes_count }}</td>
+                                <td class="px-4 py-3">{{ driver.completed_routes_count }}</td>
+                                <td class="px-4 py-3">{{ driver.collected_stops_count }}</td>
+                                <td class="px-4 py-3">{{ driver.skipped_stops_count }}</td>
+                            </tr>
                         {% empty %}
-                        <tr>
-                            <td colspan="5" class="px-4 py-6 text-center text-slate-400">No driver data.</td>
-                        </tr>
+                            <tr>
+                                <td colspan="5" class="px-4 py-6 text-center text-slate-400">No driver data.</td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>

@@ -1,14 +1,20 @@
-{% load static %}
+﻿{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="transition-colors duration-300">
 <head>
     <meta charset="UTF-8">
+    <meta name="description" content="Smart Waste Management System for city and enterprise operations with real-time bin monitoring, route planning and alerts.">
+    <meta name="keywords" content="smart waste, waste management, IoT, bin tracking, route optimization, Django">
+    <meta name="theme-color" content="#0f172a">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Smart Waste{% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body id="body" class="bg-slate-900 text-white transition-colors duration-300">
+<body id="body" class="bg-white text-slate-900 dark:bg-slate-900 dark:text-white transition-colors duration-300">
     {% include "base/navbar.html" %}
     <main class="min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {% block content %}
@@ -19,3 +25,5 @@
     <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
+
+

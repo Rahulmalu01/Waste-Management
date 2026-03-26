@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load custom_filters %}
+
+{% block title %}
+    Edit User Role
+{% endblock %}
+
+{% block content %}
+    <div class="max-w-md mx-auto py-10">
+        <h1 class="text-3xl font-bold mb-6">Edit Role for {{ user.username }}</h1>
+
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Username Field -->
+                <div class="mb-4">
+                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Username
+                    </label>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        id="username" 
+                        value="{{ user.username }}" 
+                        class="mt-1 block w-full px-4 py-2 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg"
+                        disabled
+                    />
+                </div>
+
+                <!-- Role Field -->
+                <div class="mb-4">
+                    <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Role
+                    </label>
+                    {{ form.role|add_class:"mt-1 block w-full px-4 py-2 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg" }}
+                </div>
+
+                <!-- Other form fields loop -->
+                {% for field in form %}
+                    {% if field.name != 'role' %}
+                        <div class="mb-4">
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {{ field.label }}
+                            </label>
+                            {{ field|add_class:"mt-1 block w-full px-4 py-2 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg" }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Submit Button -->
+                <div class="mt-6">
+                    <button 
+                        type="submit" 
+                        class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
+                    >
+                        Update Role
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
