@@ -2,29 +2,60 @@
 {% block title %}User Dashboard{% endblock %}
 {% block content %}
 <div class="max-w-7xl mx-auto py-10 space-y-8">
-    <div>
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">User Dashboard</h1>
-        <p class="text-slate-500 dark:text-slate-300 mt-1">Access your services</p>
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-lg p-8">
+        <h1 class="text-4xl font-bold text-slate-900 dark:text-white">👤 User Dashboard</h1>
+        <p class="text-slate-500 dark:text-slate-300 mt-2">Access your community waste management services</p>
     </div>
 
+    <!-- Main Action Cards -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="{% url 'nearby_bins' %}" class="card block cursor-pointer hover:border-blue-400 dark:hover:border-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
-            <h3 class="font-semibold text-lg text-slate-900 dark:text-white">Nearby Bins</h3>
-            <p class="text-slate-500 dark:text-slate-300 mt-2">Check bin availability in your area</p>
-            <span class="mt-4 inline-flex items-center rounded-md px-2.5 py-1.5 text-sm font-medium text-blue-700 dark:text-cyan-100 bg-blue-100 dark:bg-cyan-900/35">View bins</span>
+        <a href="{% url 'nearby_bins' %}" class="group">
+            <div class="card block cursor-pointer hover:border-blue-400 dark:hover:border-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 hover:shadow-xl hover:shadow-blue-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🗑️</div>
+                    <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold">Find</span>
+                </div>
+                <h3 class="font-semibold text-lg text-slate-900 dark:text-white">Nearby Bins</h3>
+                <p class="text-slate-500 dark:text-slate-300 mt-2">Check bin availability in your area</p>
+                <div class="mt-4 text-blue-400 group-hover:translate-x-1 transition">→ Find Bins</div>
+            </div>
         </a>
 
-        <a href="{% url 'report_issue' %}" class="card block cursor-pointer hover:border-blue-400 dark:hover:border-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
-            <h3 class="font-semibold text-lg text-slate-900 dark:text-white">Report Issue</h3>
-            <p class="text-slate-500 dark:text-slate-300 mt-2">Report overflowing or damaged bins quickly</p>
-            <span class="mt-4 inline-flex items-center rounded-md px-2.5 py-1.5 text-sm font-medium text-blue-700 dark:text-cyan-100 bg-blue-100 dark:bg-cyan-900/35">Create report</span>
+        <a href="{% url 'report_issue' %}" class="group">
+            <div class="card block cursor-pointer hover:border-blue-400 dark:hover:border-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 hover:shadow-xl hover:shadow-red-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">📢</div>
+                    <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs font-semibold">Report</span>
+                </div>
+                <h3 class="font-semibold text-lg text-slate-900 dark:text-white">Report Issue</h3>
+                <p class="text-slate-500 dark:text-slate-300 mt-2">Report overflowing or damaged bins quickly</p>
+                <div class="mt-4 text-red-400 group-hover:translate-x-1 transition">→ Create Report</div>
+            </div>
         </a>
 
-        <a href="{% url 'my_reports' %}" class="card block cursor-pointer hover:border-blue-400 dark:hover:border-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
-            <h3 class="font-semibold text-lg text-slate-900 dark:text-white">My Reports</h3>
-            <p class="text-slate-500 dark:text-slate-300 mt-2">Track the status of submitted complaints</p>
-            <span class="mt-4 inline-flex items-center rounded-md px-2.5 py-1.5 text-sm font-medium text-blue-700 dark:text-cyan-100 bg-blue-100 dark:bg-cyan-900/35">View reports</span>
+        <a href="{% url 'my_reports' %}" class="group">
+            <div class="card block cursor-pointer hover:border-blue-400 dark:hover:border-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 hover:shadow-xl hover:shadow-purple-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">📋</div>
+                    <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs font-semibold">Track</span>
+                </div>
+                <h3 class="font-semibold text-lg text-slate-900 dark:text-white">My Reports</h3>
+                <p class="text-slate-500 dark:text-slate-300 mt-2">Track the status of submitted complaints</p>
+                <div class="mt-4 text-purple-400 group-hover:translate-x-1 transition">→ View Reports</div>
+            </div>
         </a>
+    </div>
+
+    <!-- Helpful Tips -->
+    <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-6">
+        <h3 class="font-semibold text-lg mb-3">💡 Tips for Responsible Waste Management</h3>
+        <ul class="space-y-2 text-slate-300 text-sm">
+            <li>✓ Separate waste according to local guidelines (plastic, paper, organic)</li>
+            <li>✓ Keep bins clean by wrapping waste in newspapers or bags</li>
+            <li>✓ Report overflowing bins immediately so they can be serviced</li>
+            <li>✓ Use nearby bins instead of littering on the streets</li>
+        </ul>
     </div>
 </div>
 {% endblock %}

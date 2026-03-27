@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% block title %}{{ bin.name }} - Bin Details | Smart Waste{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-8 space-y-8">
+    <!-- Header -->
+    <div class="flex justify-between items-start">
+        <div>
+            <h1 class="text-4xl font-bold">📦 {{ bin.name }}</h1>
+            <p class="text-slate-400 mt-2">ID: <span class="font-mono">{{ bin.bin_id }}</span></p>
+        </div>
+        <div class="flex gap-2">
+            {% if request.user.role in "MANAGER,ADMIN" %}
+                <a href="{% url 'bin_update' bin.id %}" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg transition">
+                    ✏️ Edit
+                </a>
+                <a href="{% url 'bin_delete' bin.id %}" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition">
+                    🗑️ Delete
+                </a>
+                <a href="{% url 'bin_toggle_status' bin.id %}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition">
+                    {% if bin.is_active %}🔴{% else %}🟢{% endif %} Toggle
+                </a>
+            {% endif %}
+            <a href="{% url 'bin_management_list' %}" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition">
+                ← Back
+            </a>
+        </div>
+    </div>
+
+    <!-- Status Cards -->
+    <div class="grid md:grid-cols-4 gap-4">
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Status</p>
+            <h3 class="text-2xl font-bold mt-2">
+                {% if bin.status == 'FULL' %}
+                    🔴 Full
+                {% elif bin.status == 'PARTIAL' %}
+                    🟡 Partial
+                {% elif bin.status == 'EMPTY' %}
+                    🟢 Empty
+                {% else %}
+                    ⚪ Offline
+                {% endif %}
+            </h3>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Fill Percentage</p>
+            <h3 class="text-2xl font-bold mt-2">{{ bin.fill_percentage|floatformat:1 }}%</h3>
+            <div class="w-full bg-slate-700 rounded-full h-2 mt-2">
+                <div class="bg-gradient-to-r from-green-400 to-red-400 h-2 rounded-full"
+                     style="width: {{ bin.fill_percentage }}%"></div>
+            </div>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Active Status</p>
+            <h3 class="text-2xl font-bold mt-2">
+                {% if bin.is_active %}✓ Active{% else %}✗ Inactive{% endif %}
+            </h3>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Last Updated</p>
+            <h3 class="text-lg font-bold mt-2">{{ bin.updated_at|date:"M d, H:i" }}</h3>
+        </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="grid md:grid-cols-2 gap-8">
+        <!-- Location Info -->
+        <div class="bg-white/5 border border-white/10 rounded-lg p-6 space-y-4">
+            <h2 class="text-xl font-bold">📍 Location Information</h2>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <p class="text-slate-400">Location Name</p>
+                    <p class="font-semibold">{{ bin.location_name }}</p>
+                </div>
+                <div>
+                    <p class="text-slate-400">Latitude</p>
+                    <p class="font-mono">{{ bin.latitude }}</p>
+                </div>
+                <div>
+                    <p class="text-slate-400">Longitude</p>
+                    <p class="font-mono">{{ bin.longitude }}</p>
+                </div>
+                <div class="pt-3 border-t border-white/10">
+                    <a href="https://maps.google.com/?q={{ bin.latitude }},{{ bin.longitude }}" 
+                       target="_blank" class="text-blue-400 hover:text-blue-300">
+                        🌐 View on Google Maps →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Info -->
+        <div class="bg-white/5 border border-white/10 rounded-lg p-6 space-y-4">
+            <h2 class="text-xl font-bold">⚙️ Technical Information</h2>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <p class="text-slate-400">Bin Height</p>
+                    <p class="font-semibold">{{ bin.bin_height_cm }} cm</p>
+                </div>
+                <div>
+                    <p class="text-slate-400">Fill Threshold</p>
+                    <p class="font-semibold">{{ bin.threshold_percentage }}% (alerts at this fullness)</p>
+                </div>
+                <div>
+                    <p class="text-slate-400">Current Distance</p>
+                    <p class="font-semibold">{{ bin.current_distance_cm }} cm from bottom</p>
+                </div>
+                <div class="pt-3 border-t border-white/10">
+                    <p class="text-slate-400 text-xs">Device Key (Auto-generated)</p>
+                    <p class="font-mono text-xs break-all">{{ bin.device_key }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Readings -->
+    <div class="bg-white/5 border border-white/10 rounded-lg p-6">
+        <h2 class="text-xl font-bold mb-4">📊 Recent Readings</h2>
+        
+        {% if recent_readings %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="border-b border-white/10">
+                    <tr class="text-slate-400">
+                        <th class="text-left py-2">Date/Time</th>
+                        <th class="text-left py-2">Distance (cm)</th>
+                        <th class="text-left py-2">Fill %</th>
+                        <th class="text-left py-2">Location</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/10">
+                    {% for reading in recent_readings %}
+                    <tr class="hover:bg-white/5 transition">
+                        <td class="py-3">{{ reading.created_at|date:"M d, H:i" }}</td>
+                        <td class="py-3">{{ reading.distance_cm }}</td>
+                        <td class="py-3">
+                            <div class="flex items-center gap-2">
+                                <div class="w-16 bg-slate-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-green-400 to-red-400 h-2 rounded-full"
+                                         style="width: {{ reading.fill_percentage }}%"></div>
+                                </div>
+                                {{ reading.fill_percentage|floatformat:1 }}%
+                            </div>
+                        </td>
+                        <td class="py-3 text-slate-400">{{ reading.latitude|floatformat:4 }}, {{ reading.longitude|floatformat:4 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-slate-400 text-center py-8">No readings yet</p>
+        {% endif %}
+    </div>
+
+    <!-- Actions -->
+    {% if request.user.role in "MANAGER,ADMIN" %}
+    <div class="flex gap-3">
+        <a href="{% url 'bin_management_list' %}" class="flex-1 px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-lg transition text-center">
+            Back to Management
+        </a>
+        <a href="{% url 'bin_update' bin.id %}" class="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition text-center">
+            Edit Bin Details
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Optional: Add fill percentage chart
+    const ctx = document.getElementById('fillChart');
+    if (ctx && {{ fill_data|length }} > 0) {
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ dates|safe }},
+                datasets: [{
+                    label: 'Fill Percentage',
+                    data: {{ fill_data|safe }},
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#cbd5e1' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { color: '#cbd5e1' },
+                        grid: { color: '#475569' }
+                    },
+                    x: {
+                        ticks: { color: '#cbd5e1' },
+                        grid: { color: '#475569' }
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

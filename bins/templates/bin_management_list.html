@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Bin Management | Smart Waste{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-8 space-y-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-4xl font-bold">📦 Bin Management</h1>
+            <p class="text-slate-400 mt-2">Add, update, or delete bins from the system</p>
+        </div>
+        {% if request.user.role in "MANAGER,ADMIN" %}
+        <a href="{% url 'bin_create' %}" class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg hover:shadow-lg transition font-semibold">
+            + Add New Bin
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid md:grid-cols-4 gap-4">
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Total Bins</p>
+            <h2 class="text-3xl font-bold mt-2">{{ total_bins }}</h2>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Full</p>
+            <h2 class="text-3xl font-bold mt-2 text-red-400">{{ full_bins }}</h2>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Empty</p>
+            <h2 class="text-3xl font-bold mt-2 text-green-400">{{ empty_bins }}</h2>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Offline</p>
+            <h2 class="text-3xl font-bold mt-2 text-yellow-400">{{ offline_bins }}</h2>
+        </div>
+    </div>
+
+    <!-- Search & Filters -->
+    <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+        <form method="get" class="flex gap-3 flex-wrap">
+            <input type="text" name="search" value="{{ search }}" 
+                   placeholder="Search by ID, name, or location..." 
+                   class="flex-1 px-4 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white">
+            
+            <select name="status" class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white">
+                <option value="">All Statuses</option>
+                <option value="EMPTY" {% if status_filter == 'EMPTY' %}selected{% endif %}>Empty</option>
+                <option value="PARTIAL" {% if status_filter == 'PARTIAL' %}selected{% endif %}>Partial</option>
+                <option value="FULL" {% if status_filter == 'FULL' %}selected{% endif %}>Full</option>
+                <option value="OFFLINE" {% if status_filter == 'OFFLINE' %}selected{% endif %}>Offline</option>
+            </select>
+            
+            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition">
+                Search
+            </button>
+            <a href="{% url 'bin_management_list' %}" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition">
+                Clear
+            </a>
+        </form>
+    </div>
+
+    <!-- Bins Table -->
+    <div class="bg-white/5 border border-white/10 rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="border-b border-white/10 bg-slate-800/50">
+                    <tr class="text-left text-sm text-slate-400">
+                        <th class="px-6 py-4 font-semibold">Bin ID</th>
+                        <th class="px-6 py-4 font-semibold">Name</th>
+                        <th class="px-6 py-4 font-semibold">Location</th>
+                        <th class="px-6 py-4 font-semibold">Fill %</th>
+                        <th class="px-6 py-4 font-semibold">Status</th>
+                        <th class="px-6 py-4 font-semibold">Active</th>
+                        <th class="px-6 py-4 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/10">
+                    {% for bin in page_bins %}
+                    <tr class="hover:bg-white/5 transition">
+                        <td class="px-6 py-4 font-mono text-sm">{{ bin.bin_id }}</td>
+                        <td class="px-6 py-4">{{ bin.name }}</td>
+                        <td class="px-6 py-4 text-sm text-slate-400">{{ bin.location_name }}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-24 bg-slate-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-green-400 to-red-400 h-2 rounded-full"
+                                         style="width: {{ bin.fill_percentage }}%"></div>
+                                </div>
+                                <span class="text-sm">{{ bin.fill_percentage|floatformat:1 }}%</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if bin.status == 'FULL' %}
+                                <span class="px-2 py-1 rounded-full text-xs bg-red-500/20 text-red-300">🔴 Full</span>
+                            {% elif bin.status == 'PARTIAL' %}
+                                <span class="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-300">🟡 Partial</span>
+                            {% elif bin.status == 'EMPTY' %}
+                                <span class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-300">🟢 Empty</span>
+                            {% else %}
+                                <span class="px-2 py-1 rounded-full text-xs bg-gray-500/20 text-gray-300">⚪ Offline</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if bin.is_active %}
+                                <span class="px-2 py-1 rounded text-xs bg-green-500/20 text-green-300">✓ Active</span>
+                            {% else %}
+                                <span class="px-2 py-1 rounded text-xs bg-red-500/20 text-red-300">✗ Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex gap-2">
+                                <a href="{% url 'bin_detail' bin.id %}" class="px-3 py-1 text-xs rounded bg-blue-600 hover:bg-blue-700 transition">View</a>
+                                {% if request.user.role in "MANAGER,ADMIN" %}
+                                    <a href="{% url 'bin_update' bin.id %}" class="px-3 py-1 text-xs rounded bg-yellow-600 hover:bg-yellow-700 transition">Edit</a>
+                                    <a href="{% url 'bin_delete' bin.id %}" class="px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-700 transition">Delete</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-slate-400">
+                            No bins found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if paginator.num_pages > 1 %}
+    <div class="flex justify-center items-center gap-2">
+        {% if page_bins.has_previous %}
+            <a href="?page=1{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" 
+               class="px-3 py-2 rounded bg-white/5 border border-white/10 hover:bg-white/10">« First</a>
+            <a href="?page={{ page_bins.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" 
+               class="px-3 py-2 rounded bg-white/5 border border-white/10 hover:bg-white/10">‹ Previous</a>
+        {% endif %}
+        
+        <span class="px-3 py-2 text-slate-400">
+            Page {{ page_bins.number }} of {{ paginator.num_pages }}
+        </span>
+        
+        {% if page_bins.has_next %}
+            <a href="?page={{ page_bins.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" 
+               class="px-3 py-2 rounded bg-white/5 border border-white/10 hover:bg-white/10">Next ›</a>
+            <a href="?page={{ paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" 
+               class="px-3 py-2 rounded bg-white/5 border border-white/10 hover:bg-white/10">Last »</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

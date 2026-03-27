@@ -1,18 +1,86 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block title %}Manager Dashboard{% endblock %}
 {% block content %}
 <div class="max-w-7xl mx-auto py-10 space-y-8">
-    <div>
-        <h1 class="text-3xl font-bold">Manager Dashboard</h1>
-        <p class="text-slate-400 mt-1">Monitor operations</p>
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-lg p-8">
+        <h1 class="text-4xl font-bold">📋 Manager Dashboard</h1>
+        <p class="text-slate-400 mt-2">Monitor waste collection operations</p>
     </div>
+
+    <!-- Main Action Cards -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="{% url 'bin_dashboard' %}" class="card"><h3 class="font-semibold">Bin Monitoring</h3></a>
-        <a href="{% url 'alert_list' %}" class="card"><h3 class="font-semibold">Live Alerts</h3></a>
-        <a href="{% url 'bin_map' %}" class="card"><h3 class="font-semibold">Map View</h3></a>
-        <a href="{% url 'route_list' %}" class="card"><h3 class="font-semibold">Routes</h3></a>
-        <a href="{% url 'analytics_dashboard' %}" class="card"><h3 class="font-semibold">Analytics</h3></a>
-        <a href="{% url 'reports_home' %}" class="card"><h3 class="font-semibold">Reports</h3></a>
+        <a href="{% url 'bin_dashboard' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-purple-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🗑️</div>
+                    <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs font-semibold">Monitor</span>
+                </div>
+                <h3 class="font-semibold text-lg">Bin Monitoring</h3>
+                <p class="text-slate-400 text-sm mt-2">Track all bins and their status</p>
+                <div class="mt-4 text-purple-400 group-hover:translate-x-1 transition">→ Monitor Bins</div>
+            </div>
+        </a>
+
+        <a href="{% url 'alert_list' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-red-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🚨</div>
+                    <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs font-semibold">Urgent</span>
+                </div>
+                <h3 class="font-semibold text-lg">Live Alerts</h3>
+                <p class="text-slate-400 text-sm mt-2">View bins needing attention</p>
+                <div class="mt-4 text-red-400 group-hover:translate-x-1 transition">→ Check Alerts</div>
+            </div>
+        </a>
+
+        <a href="{% url 'bin_map' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-yellow-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🗺️</div>
+                    <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-xs font-semibold">Track</span>
+                </div>
+                <h3 class="font-semibold text-lg">Map View</h3>
+                <p class="text-slate-400 text-sm mt-2">View all bin locations</p>
+                <div class="mt-4 text-yellow-400 group-hover:translate-x-1 transition">→ View Map</div>
+            </div>
+        </a>
+
+        <a href="{% url 'route_list' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-green-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🛣️</div>
+                    <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-semibold">Routes</span>
+                </div>
+                <h3 class="font-semibold text-lg">Routes</h3>
+                <p class="text-slate-400 text-sm mt-2">Manage collection routes</p>
+                <div class="mt-4 text-green-400 group-hover:translate-x-1 transition">→ View Routes</div>
+            </div>
+        </a>
+
+        <a href="{% url 'analytics_dashboard' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-sky-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">📊</div>
+                    <span class="px-3 py-1 bg-sky-500/20 text-sky-300 rounded-full text-xs font-semibold">Analytics</span>
+                </div>
+                <h3 class="font-semibold text-lg">Analytics</h3>
+                <p class="text-slate-400 text-sm mt-2">View operational analytics</p>
+                <div class="mt-4 text-sky-400 group-hover:translate-x-1 transition">→ View Analytics</div>
+            </div>
+        </a>
+
+        <a href="{% url 'reports_home' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-indigo-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">📄</div>
+                    <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-semibold">Reports</span>
+                </div>
+                <h3 class="font-semibold text-lg">Reports</h3>
+                <p class="text-slate-400 text-sm mt-2">Generate and view reports</p>
+                <div class="mt-4 text-indigo-400 group-hover:translate-x-1 transition">→ View Reports</div>
+            </div>
+        </a>
     </div>
 </div>
 {% endblock %}

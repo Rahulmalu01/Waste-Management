@@ -1,24 +1,123 @@
-{% extends "base.html" %}
+﻿{%extends 'base.html' %}
 {% block title %}Driver Dashboard{% endblock %}
 {% block content %}
 <div class="max-w-7xl mx-auto py-10 space-y-8">
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg p-8">
+        <h1 class="text-4xl font-bold">🚀 Driver Dashboard</h1>
+        <p class="text-slate-400 mt-2">Manage waste collection routes and bins efficiently</p>
+    </div>
+
+    <!-- Main Action Cards -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="card">
-            <h3 class="font-semibold">Assigned Route</h3>
-            <p class="text-slate-400 text-sm mt-2">View today’s route</p>
-        </div>
-        <div class="card">
-            <h3 class="font-semibold">Bin Alerts</h3>
-            <p class="text-slate-400 text-sm mt-2">Urgent pickups</p>
-        </div>
-        <div class="card">
-            <h3 class="font-semibold">Collection Status</h3>
-            <p class="text-slate-400 text-sm mt-2">Track progress</p>
-        </div>
-        <a href="{% url 'assigned_routes' %}" class="card">
-            <h3 class="font-semibold">My Routes</h3>
-            <p class="text-slate-400 text-sm mt-2">View all routes</p>
+        <!-- Bin Management -->
+        <a href="{% url 'bin_management_list' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-blue-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🗑️</div>
+                    <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold">Manage</span>
+                </div>
+                <h3 class="font-semibold text-lg">Bin Management</h3>
+                <p class="text-slate-400 text-sm mt-2">Add, edit, or view waste bins in the system</p>
+                <div class="mt-4 text-blue-400 group-hover:translate-x-1 transition">→ View All Bins</div>
+            </div>
         </a>
+
+        <!-- Add New Bin -->
+        <a href="{% url 'bin_create' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-green-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">➕</div>
+                    <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-semibold">New</span>
+                </div>
+                <h3 class="font-semibold text-lg">Add New Bin</h3>
+                <p class="text-slate-400 text-sm mt-2">Register a new waste collection bin</p>
+                <div class="mt-4 text-green-400 group-hover:translate-x-1 transition">→ Create Bin</div>
+            </div>
+        </a>
+
+        <!-- Assigned Routes -->
+        <a href="{% url 'assigned_routes' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-purple-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🛣️</div>
+                    <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs font-semibold">Today</span>
+                </div>
+                <h3 class="font-semibold text-lg">My Routes</h3>
+                <p class="text-slate-400 text-sm mt-2">View your assigned collection routes</p>
+                <div class="mt-4 text-purple-400 group-hover:translate-x-1 transition">→ View Routes</div>
+            </div>
+        </a>
+
+        <!-- Bin Alerts -->
+        <a href="{% url 'alert_list' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-red-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🚨</div>
+                    <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs font-semibold">Urgent</span>
+                </div>
+                <h3 class="font-semibold text-lg">Bin Alerts</h3>
+                <p class="text-slate-400 text-sm mt-2">View bins that need immediate attention</p>
+                <div class="mt-4 text-red-400 group-hover:translate-x-1 transition">→ Check Alerts</div>
+            </div>
+        </a>
+
+        <!-- Collection Status -->
+        <a href="{% url 'bin_map' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-yellow-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">📍</div>
+                    <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-xs font-semibold">Track</span>
+                </div>
+                <h3 class="font-semibold text-lg">Collection Status</h3>
+                <p class="text-slate-400 text-sm mt-2">Track collection progress on the map</p>
+                <div class="mt-4 text-yellow-400 group-hover:translate-x-1 transition">→ View Map</div>
+            </div>
+        </a>
+
+        <!-- My Rewards -->
+        <a href="{% url 'user_points' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-pink-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🏆</div>
+                    <span class="px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-xs font-semibold">Rewards</span>
+                </div>
+                <h3 class="font-semibold text-lg">My Rewards</h3>
+                <p class="text-slate-400 text-sm mt-2">Check your points and achievements</p>
+                <div class="mt-4 text-pink-400 group-hover:translate-x-1 transition">→ View Points</div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid md:grid-cols-4 gap-4">
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Total Bins</p>
+            <h2 class="text-3xl font-bold mt-2">{{ total_bins|default:"--" }}</h2>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Full Bins</p>
+            <h2 class="text-3xl font-bold mt-2 text-red-400">{{ full_bins|default:"--" }}</h2>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Partial Bins</p>
+            <h2 class="text-3xl font-bold mt-2 text-yellow-400">{{ partial_bins|default:"--" }}</h2>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Empty Bins</p>
+            <h2 class="text-3xl font-bold mt-2 text-green-400">{{ empty_bins|default:"--" }}</h2>
+        </div>
+    </div>
+
+    <!-- Help & Tips -->
+    <div class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6">
+        <h3 class="font-semibold text-lg mb-3">💡 Tips for Efficiency</h3>
+        <ul class="space-y-2 text-slate-300 text-sm">
+            <li>✓ Check alerts regularly to prioritize pickups</li>
+            <li>✓ Plan routes efficiently to save time and fuel</li>
+            <li>✓ Report bins accurately to earn points and badges</li>
+            <li>✓ Use the map view to navigate to collection points</li>
+        </ul>
     </div>
 </div>
 {% endblock %}

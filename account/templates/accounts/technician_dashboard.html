@@ -1,24 +1,85 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block title %}Technician Dashboard{% endblock %}
 {% block content %}
 <div class="max-w-7xl mx-auto py-10 space-y-8">
-    <div>
-        <h1 class="text-3xl font-bold">Technician Dashboard</h1>
-        <p class="text-slate-400 mt-1">Device monitoring & maintenance</p>
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded-lg p-8">
+        <h1 class="text-4xl font-bold">🔧 Technician Dashboard</h1>
+        <p class="text-slate-400 mt-2">Monitor and maintain IoT devices</p>
     </div>
+
+    <!-- Main Action Cards -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="card">
-            <h3 class="font-semibold">Device Health</h3>
-            <p class="text-slate-400 text-sm mt-2">Monitor IoT status</p>
+        <div class="card hover:shadow-xl hover:shadow-green-500/20 transition duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div class="text-4xl">🔌</div>
+                <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-semibold">Health</span>
+            </div>
+            <h3 class="font-semibold text-lg">Device Health</h3>
+            <p class="text-slate-400 text-sm mt-2">Monitor real-time IoT device status</p>
+            <div class="mt-4 text-slate-400">Check device connectivity and battery levels</div>
         </div>
-        <div class="card">
-            <h3 class="font-semibold">Maintenance Tasks</h3>
-            <p class="text-slate-400 text-sm mt-2">Pending fixes</p>
+
+        <div class="card hover:shadow-xl hover:shadow-yellow-500/20 transition duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div class="text-4xl">🔨</div>
+                <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-xs font-semibold">Tasks</span>
+            </div>
+            <h3 class="font-semibold text-lg">Maintenance Tasks</h3>
+            <p class="text-slate-400 text-sm mt-2">Pending maintenance and repairs</p>
+            <div class="mt-4 text-slate-400">Track equipment fixes and updates</div>
         </div>
-        <div class="card">
-            <h3 class="font-semibold">Bin Hardware</h3>
-            <p class="text-slate-400 text-sm mt-2">Hardware status</p>
+
+        <div class="card hover:shadow-xl hover:shadow-blue-500/20 transition duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div class="text-4xl">⚙️</div>
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold">Hardware</span>
+            </div>
+            <h3 class="font-semibold text-lg">Bin Hardware</h3>
+            <p class="text-slate-400 text-sm mt-2">Hardware status and diagnostics</p>
+            <div class="mt-4 text-slate-400">Monitor sensor performance and calibration</div>
         </div>
+
+        <div class="card hover:shadow-xl hover:shadow-red-500/20 transition duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div class="text-4xl">📡</div>
+                <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs font-semibold">Network</span>
+            </div>
+            <h3 class="font-semibold text-lg">Sensor Network</h3>
+            <p class="text-slate-400 text-sm mt-2">Sensor connectivity monitoring</p>
+            <div class="mt-4 text-slate-400">Track connectivity issues and signal strength</div>
+        </div>
+
+        <div class="card hover:shadow-xl hover:shadow-purple-500/20 transition duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div class="text-4xl">📊</div>
+                <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs font-semibold">Logs</span>
+            </div>
+            <h3 class="font-semibold text-lg">Diagnostic Logs</h3>
+            <p class="text-slate-400 text-sm mt-2">Device and sensor diagnostic logs</p>
+            <div class="mt-4 text-slate-400">Review error logs and debug information</div>
+        </div>
+
+        <div class="card hover:shadow-xl hover:shadow-cyan-500/20 transition duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div class="text-4xl">⚡</div>
+                <span class="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full text-xs font-semibold">Power</span>
+            </div>
+            <h3 class="font-semibold text-lg">Power Management</h3>
+            <p class="text-slate-400 text-sm mt-2">Battery and power status</p>
+            <div class="mt-4 text-slate-400">Monitor power consumption and charging</div>
+        </div>
+    </div>
+
+    <!-- Tips Section -->
+    <div class="bg-orange-500/10 border border-orange-500/20 rounded-lg p-6">
+        <h3 class="font-semibold text-lg mb-3">💡 Technician Tips</h3>
+        <ul class="space-y-2 text-slate-300 text-sm">
+            <li>✓ Check device connectivity daily to catch issues early</li>
+            <li>✓ Review diagnostic logs weekly for performance trends</li>
+            <li>✓ Schedule preventive maintenance during off-peak hours</li>
+            <li>✓ Keep accurate records of all service activities</li>
+        </ul>
     </div>
 </div>
 {% endblock %}

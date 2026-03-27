@@ -1,40 +1,102 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block title %}Admin Dashboard{% endblock %}
 {% block content %}
 <div class="max-w-7xl mx-auto py-10 space-y-8">
-    <div>
-        <h1 class="text-3xl font-bold">Admin Dashboard</h1>
-        <p class="text-slate-400 mt-1">Overview of system performance</p>
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/20 rounded-lg p-8">
+        <h1 class="text-4xl font-bold">⚙️ Admin Dashboard</h1>
+        <p class="text-slate-400 mt-2">Manage system configuration and user access</p>
     </div>
+
+    <!-- Main Action Cards -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="{% url 'admin_user_roles' %}" class="card">
-            <h3 class="font-semibold text-lg">User Roles</h3>
-            <p class="text-slate-400 text-sm mt-2">Manage user roles</p>
+        <a href="{% url 'admin_user_roles' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-blue-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">👥</div>
+                    <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold">Manage</span>
+                </div>
+                <h3 class="font-semibold text-lg">User Roles</h3>
+                <p class="text-slate-400 text-sm mt-2">Manage user roles and permissions</p>
+                <div class="mt-4 text-blue-400 group-hover:translate-x-1 transition">→ Manage Roles</div>
+            </div>
         </a>
-        <a href="{% url 'bin_dashboard' %}" class="card hover:scale-[1.02]">
-            <h3 class="font-semibold text-lg">Bin Monitoring</h3>
-            <p class="text-slate-400 text-sm mt-2">Track bin fill levels</p>
+
+        <a href="{% url 'bin_dashboard' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-purple-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🗑️</div>
+                    <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs font-semibold">Monitor</span>
+                </div>
+                <h3 class="font-semibold text-lg">Bin Monitoring</h3>
+                <p class="text-slate-400 text-sm mt-2">Track bin fill levels and status</p>
+                <div class="mt-4 text-purple-400 group-hover:translate-x-1 transition">→ View Bins</div>
+            </div>
         </a>
-        <a href="{% url 'alert_list' %}" class="card">
-            <h3 class="font-semibold text-lg">Live Alerts</h3>
-            <p class="text-slate-400 text-sm mt-2">View active alerts</p>
+
+        <a href="{% url 'alert_list' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-red-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🚨</div>
+                    <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs font-semibold">Urgent</span>
+                </div>
+                <h3 class="font-semibold text-lg">Live Alerts</h3>
+                <p class="text-slate-400 text-sm mt-2">View active system alerts</p>
+                <div class="mt-4 text-red-400 group-hover:translate-x-1 transition">→ Check Alerts</div>
+            </div>
         </a>
-        <a href="{% url 'bin_map' %}" class="card">
-            <h3 class="font-semibold text-lg">Map View</h3>
-            <p class="text-slate-400 text-sm mt-2">Visualize bin locations</p>
+
+        <a href="{% url 'bin_map' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-yellow-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🗺️</div>
+                    <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-xs font-semibold">Track</span>
+                </div>
+                <h3 class="font-semibold text-lg">Map View</h3>
+                <p class="text-slate-400 text-sm mt-2">Visualize bin locations</p>
+                <div class="mt-4 text-yellow-400 group-hover:translate-x-1 transition">→ View Map</div>
+            </div>
         </a>
-        <a href="{% url 'route_list' %}" class="card">
-            <h3 class="font-semibold text-lg">Routes</h3>
-            <p class="text-slate-400 text-sm mt-2">Manage routes</p>
+
+        <a href="{% url 'route_list' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-green-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">🛣️</div>
+                    <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-semibold">Routes</span>
+                </div>
+                <h3 class="font-semibold text-lg">Routes</h3>
+                <p class="text-slate-400 text-sm mt-2">Manage collection routes</p>
+                <div class="mt-4 text-green-400 group-hover:translate-x-1 transition">→ View Routes</div>
+            </div>
         </a>
-        <a href="{% url 'analytics_dashboard' %}" class="card">
-            <h3 class="font-semibold text-lg">Analytics</h3>
-            <p class="text-slate-400 text-sm mt-2">Insights & trends</p>
+
+        <a href="{% url 'analytics_dashboard' %}" class="group">
+            <div class="card hover:shadow-xl hover:shadow-cyan-500/20 transition duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="text-4xl">📊</div>
+                    <span class="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full text-xs font-semibold">Analytics</span>
+                </div>
+                <h3 class="font-semibold text-lg">Analytics</h3>
+                <p class="text-slate-400 text-sm mt-2">View system analytics</p>
+                <div class="mt-4 text-cyan-400 group-hover:translate-x-1 transition">→ View Analytics</div>
+            </div>
         </a>
-        <a href="{% url 'reports_home' %}" class="card">
-            <h3 class="font-semibold text-lg">Reports</h3>
-            <p class="text-slate-400 text-sm mt-2">Generate reports</p>
-        </a>
+    </div>
+
+    <!-- System Stats -->
+    <div class="grid md:grid-cols-3 gap-4">
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Active Users</p>
+            <h2 class="text-3xl font-bold mt-2">{{ total_users|default:"--" }}</h2>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Total Bins</p>
+            <h2 class="text-3xl font-bold mt-2">{{ total_bins|default:"--" }}</h2>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+            <p class="text-slate-400 text-sm">Alerts This Week</p>
+            <h2 class="text-3xl font-bold mt-2 text-red-400">{{ weekly_alerts|default:"--" }}</h2>
+        </div>
     </div>
 </div>
 {% endblock %}

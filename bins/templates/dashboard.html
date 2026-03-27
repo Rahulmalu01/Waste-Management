@@ -1,126 +1,53 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block title %}Bin Monitoring Dashboard{% endblock %}
 {% block content %}
 <div class="max-w-7xl mx-auto py-8 space-y-8">
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-            <h1 class="text-3xl font-bold">Bin Monitoring Dashboard</h1>
+            <h1 class="text-3xl font-bold">📊 Bin Monitoring Dashboard</h1>
             <p class="text-slate-400 text-sm mt-1">Live operational overview for waste collection management</p>
         </div>
         <div class="flex gap-3 flex-wrap">
-            <a href="{% url 'alert_list' %}" class="px-4 py-2 rounded-xl border border-white/10 hover:bg-white/5 transition">View Alerts</a>
-            <a href="{% url 'bin_map' %}" class="px-4 py-2 rounded-xl border border-white/10 hover:bg-white/5 transition">Map View</a>
+            <a href="{% url 'alert_list' %}" class="px-4 py-2 rounded-xl border border-white/10 hover:bg-white/5 transition">🚨 View Alerts</a>
+            <a href="{% url 'bin_map' %}" class="px-4 py-2 rounded-xl border border-white/10 hover:bg-white/5 transition">🗺️ Map View</a>
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
-                <button class="px-4 py-2 rounded-xl border border-white/10 hover:bg-white/5 transition">Logout</button>
+                <button class="px-4 py-2 rounded-xl border border-white/10 hover:bg-white/5 transition">🚪 Logout</button>
             </form>
         </div>
     </div>
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
         <div class="card">
-            <p class="text-sm text-slate-400">Total Bins</p>
+            <p class="text-sm text-slate-400">🗑️ Total Bins</p>
             <p class="mt-2 text-3xl font-bold">{{ total_bins }}</p>
         </div>
         <div class="card bg-red-500/10">
-            <p class="text-sm text-red-300">Full Bins</p>
+            <p class="text-sm text-red-300">🔴 Full Bins</p>
             <p class="mt-2 text-3xl font-bold text-red-300">{{ full_bins }}</p>
         </div>
         <div class="card bg-yellow-500/10">
-            <p class="text-sm text-yellow-300">Partial Bins</p>
+            <p class="text-sm text-yellow-300">🟡 Partial Bins</p>
             <p class="mt-2 text-3xl font-bold text-yellow-300">{{ partial_bins }}</p>
         </div>
         <div class="card bg-slate-700/40">
-            <p class="text-sm text-slate-300">Offline Bins</p>
+            <p class="text-sm text-slate-300">⚪ Offline Bins</p>
             <p class="mt-2 text-3xl font-bold text-slate-200">{{ offline_bins }}</p>
         </div>
         <div class="card bg-emerald-500/10">
-            <p class="text-sm text-emerald-300">Active Alerts</p>
+            <p class="text-sm text-emerald-300">⚡ Active Alerts</p>
             <p class="mt-2 text-3xl font-bold text-emerald-300">{{ active_alerts }}</p>
         </div>
         <div class="card bg-sky-500/10">
-            <p class="text-sm text-sky-300">Resolved Alerts</p>
+            <p class="text-sm text-sky-300">✓ Resolved Alerts</p>
             <p class="mt-2 text-3xl font-bold text-sky-300">{{ resolved_alerts }}</p>
         </div>
     </div>
     <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-lg overflow-hidden">
         <div class="p-5 border-b border-white/10">
-            <h2 class="text-2xl font-semibold">Bin Status Overview</h2>
+            <h2 class="text-2xl font-semibold">🔍 Bin Status Overview</h2>
             <p class="text-slate-400 text-sm mt-1">Monitor all registered bins and their latest state</p>
         </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
-                <thead class="bg-white/5 border-b border-white/10 sticky top-0">
-                    <tr class="text-slate-300">
-                        <th class="px-6 py-4">Bin ID</th>
-                        <th class="px-6 py-4">Name</th>
-                        <th class="px-6 py-4">Location</th>
-                        <th class="px-6 py-4">Fill</th>
-                        <th class="px-6 py-4">Status</th>
-                        <th class="px-6 py-4">Last Seen</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for bin in bins %}
-                    <tr class="border-b border-white/10 hover:bg-white/5 transition">
-                        <td class="px-6 py-4 font-semibold">{{ bin.bin_id }}</td>
-                        <td class="px-6 py-4">{{ bin.name }}</td>
-                        <td class="px-6 py-4 text-slate-400">{{ bin.location_name|default:"-" }}</td>
-                        <td class="px-6 py-4 w-40">
-                            <div class="w-full bg-white/10 rounded-full h-2">
-                                <div 
-                                    class="h-2 rounded-full
-                                    {% if bin.fill_percentage >= 80 %}
-                                        bg-red-400
-                                    {% elif bin.fill_percentage >= 50 %}
-                                        bg-yellow-400
-                                    {% else %}
-                                        bg-emerald-400
-                                    {% endif %}"
-                                    style="width: {{ bin.fill_percentage }}%">
-                                </div>
-                            </div>
-                            <p class="text-xs mt-1 text-slate-400">{{ bin.fill_percentage }}%</p>
-                        </td>
-                        <td class="px-6 py-4">
-                            {% if bin.status == 'FULL' %}
-                                <span class="px-3 py-1 rounded-full text-xs bg-red-500/20 text-red-300 border border-red-500/30">● FULL</span>
-                            {% elif bin.status == 'PARTIAL' %}
-                                <span class="px-3 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">● PARTIAL</span>
-                            {% elif bin.status == 'OFFLINE' %}
-                                <span class="px-3 py-1 rounded-full text-xs bg-slate-600/40 text-slate-300 border border-white/10">● OFFLINE</span>
-                            {% else %}
-                                <span class="px-3 py-1 rounded-full text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">● EMPTY</span>
-                            {% endif %}
-                        </td>
-                        <td class="px-6 py-4 text-xs text-slate-400">{{ bin.last_seen|default:"-" }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="px-6 py-10 text-center text-slate-400">🗑️ No bins registered yet</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="grid gap-6 lg:grid-cols-2">
-        <div class="card">
-            <h3 class="text-xl font-semibold">Quick Insights</h3>
-            <ul class="mt-4 space-y-3 text-slate-300 text-sm">
-                <li>• Total operational bins being monitored.</li>
-                <li>• Full bins should be prioritized for collection.</li>
-                <li>• Offline bins may need technician inspection.</li>
-                <li>• Active alerts require immediate action.</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h3 class="text-xl font-semibold">Manager Actions</h3>
-            <div class="mt-4 flex flex-wrap gap-3">
-                <a href="{% url 'alert_list' %}" class="px-4 py-2 rounded-xl bg-red-500/20 text-red-300">Review Alerts</a>
-                <a href="{% url 'bin_dashboard' %}" class="px-4 py-2 rounded-xl bg-sky-500/20 text-sky-300">View Bin List</a>
-                <a href="{% url 'manager_dashboard' %}" class="px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-300">Manager Panel</a>
-            </div>
-        </div>
+        <div class="overflow-x-auto"></div>
     </div>
 </div>
 {% endblock %}

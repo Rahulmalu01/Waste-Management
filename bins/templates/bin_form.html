@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} Bin | Smart Waste{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-8">
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold">📦 {{ title }} Bin</h1>
+        <p class="text-slate-400 mt-2">Fill in the bin details below</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white/5 border border-white/10 rounded-lg p-8 backdrop-blur-xl">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Error Messages -->
+            {% if form.non_field_errors %}
+            <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-300">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Row 1: Bin ID & Name -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold">Bin ID *</label>
+                    {{ form.bin_id }}
+                    {% if form.bin_id.errors %}
+                    <p class="text-red-400 text-sm">{{ form.bin_id.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold">Name *</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <p class="text-red-400 text-sm">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Location -->
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold">Location Name</label>
+                {{ form.location_name }}
+                {% if form.location_name.errors %}
+                <p class="text-red-400 text-sm">{{ form.location_name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Row 2: Latitude & Longitude -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold">Latitude *</label>
+                    {{ form.latitude }}
+                    <p class="text-xs text-slate-500">e.g., 28.6139 (range: -90 to 90)</p>
+                    {% if form.latitude.errors %}
+                    <p class="text-red-400 text-sm">{{ form.latitude.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold">Longitude *</label>
+                    {{ form.longitude }}
+                    <p class="text-xs text-slate-500">e.g., 77.2090 (range: -180 to 180)</p>
+                    {% if form.longitude.errors %}
+                    <p class="text-red-400 text-sm">{{ form.longitude.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Row 3: Bin Height & Threshold -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold">Bin Height (cm) *</label>
+                    {{ form.bin_height_cm }}
+                    <p class="text-xs text-slate-500">Physical height of the bin in centimeters</p>
+                    {% if form.bin_height_cm.errors %}
+                    <p class="text-red-400 text-sm">{{ form.bin_height_cm.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold">Fill Threshold (%)</label>
+                    {{ form.threshold_percentage }}
+                    <p class="text-xs text-slate-500">Alert when fullness exceeds this %</p>
+                    {% if form.threshold_percentage.errors %}
+                    <p class="text-red-400 text-sm">{{ form.threshold_percentage.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Active Status -->
+            <div class="space-y-2">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    {{ form.is_active }}
+                    <span class="text-sm font-semibold">Active (Enable this bin in the system)</span>
+                </label>
+                {% if form.is_active.errors %}
+                <p class="text-red-400 text-sm">{{ form.is_active.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-3 pt-6 border-t border-white/10">
+                <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg hover:shadow-lg transition font-semibold">
+                    ✓ {{ action }} Bin
+                </button>
+                <a href="{% url 'bin_management_list' %}" class="flex-1 px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-lg transition font-semibold text-center">
+                    Cancel
+                </a>
+                {% if bin %}
+                <a href="{% url 'bin_detail' bin.id %}" class="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition font-semibold text-center">
+                    View
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Help Section -->
+    <div class="mt-8 bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+        <h3 class="font-semibold text-blue-300 mb-2">💡 Tip</h3>
+        <p class="text-sm text-blue-200">
+            Ensure that the GPS coordinates (latitude/longitude) are accurate so drivers can locate the bin correctly.
+            The fill threshold determines when the system alerts about a full bin.
+        </p>
+    </div>
+</div>
+{% endblock %}
