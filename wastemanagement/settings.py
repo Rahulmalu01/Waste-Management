@@ -176,3 +176,14 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 MANAGER_REPORT_EMAILS = [
     'anushkatikande55@gmail.com',
 ]
+
+GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")
+DEPOT_LAT = 18.5204
+DEPOT_LNG = 73.8567
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-route-cache"
+    }
+}

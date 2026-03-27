@@ -3,7 +3,7 @@ from django.utils import timezone
 from bins.models import Bin
 from alerts.services import resolve_bin_full_alert
 from .models import Route, RouteStop, RouteActivity
-
+from .services_google_optimizer import optimize_with_google
 
 # -------------------------------
 # BIN FETCH
@@ -96,74 +96,35 @@ def two_opt(route):
 # MAIN OPTIMIZER
 # -------------------------------
 def run_trained_route_optimizer(bin_data):
-    if not bin_data:
+    route, total_distance, total_time = optimize_with_google(bin_data)
+    if not route:
         return {
-            'total_distance_km': 0.0,
-            'optimized_order': [],
-            'raw_output': {'message': 'No bins'}
+            "total_distance_km": 0,
+            "estimated_time_min": 0,
+            "optimized_order": [],
+            "raw_output": {}
         }
-
-    depot_lat = 18.5204
-    depot_lng = 73.8567
-
-    unvisited = bin_data.copy()
-    route = []
-
-    current_lat = depot_lat
-    current_lng = depot_lng
-
-    total_distance = 0
-
-    # -------- NEAREST NEIGHBOR --------
-    while unvisited:
-        nearest = None
-        min_dist = float('inf')
-
-        for b in unvisited:
-            dist = calculate_distance(
-                current_lat,
-                current_lng,
-                b['latitude'],
-                b['longitude']
-            )
-
-            if dist < min_dist:
-                min_dist = dist
-                nearest = b
-
-        route.append(nearest)
-        total_distance += min_dist
-
-        current_lat = nearest['latitude']
-        current_lng = nearest['longitude']
-
-        unvisited.remove(nearest)
-
-    # -------- 2-OPT IMPROVEMENT --------
-    route = two_opt(route)
-
-    # -------- FINAL FORMAT --------
     optimized_order = []
-    stop_order = 1
-
-    for bin_obj in route:
+    cumulative_time = 0
+    avg_time_per_stop = total_time / len(route) if route else 0
+    for index, bin_obj in enumerate(route):
+        cumulative_time += avg_time_per_stop
         optimized_order.append({
-            'stop_order': stop_order,
-            'bin_id': bin_obj['bin_id'],
-            'bin_code': bin_obj['bin_code'],
-            'estimated_arrival': f"{stop_order * 5} min"
+            "stop_order": index+1,
+            "bin_id": bin_obj["bin_id"],
+            "bin_code": bin_obj["bin_code"],
+            "estimated_arrival": f"{int(cumulative_time)} min"
         })
         stop_order += 1
-
     return {
-        'total_distance_km': round(total_distance, 2),
-        'optimized_order': optimized_order,
-        'raw_output': {
-            'algorithm': 'nearest_neighbor + 2opt',
-            'stops': len(optimized_order)
+        "total_distance_km": total_distance,
+        "estimated_time_min": total_time,
+        "optimized_order": optimized_order,
+        "raw_output": {
+            "algorithm": "google_distance_matrix",
+            "traffic": True
         }
     }
-
 
 # -------------------------------
 # LOGGING
