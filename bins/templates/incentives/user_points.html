@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}My Rewards | Smart Waste{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-8 space-y-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-4xl font-bold">?? My Rewards & Points</h1>
+            <p class="text-slate-400 mt-2">Track your incentives and earn badges for consistent participation</p>
+        </div>
+        <div class="flex gap-2">
+            <a href="{% url 'leaderboard' %}" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:shadow-lg transition">
+                ?? Leaderboard
+            </a>
+            <a href="{% url 'achievements' %}" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg hover:shadow-lg transition">
+                ??? Achievements
+            </a>
+        </div>
+    </div>
+
+    <!-- Points Card -->
+    <div class="grid md:grid-cols-4 gap-4">
+        <!-- Total Points -->
+        <div class="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">Total Points</p>
+                    <h2 class="text-4xl font-bold text-white mt-2">{{ user_points.total_points }}</h2>
+                    <p class="text-xs text-slate-500 mt-2">Lifetime: {{ user_points.lifetime_points }}</p>
+                </div>
+                <span class="text-5xl">?</span>
+            </div>
+        </div>
+
+        <!-- Level -->
+        <div class="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">Player Level</p>
+                    <h2 class="text-4xl font-bold text-white mt-2">{{ user_points.level }}</h2>
+                    <div class="w-full bg-slate-700 rounded-full h-2 mt-3">
+                        <div class="bg-gradient-to-r from-blue-400 to-purple-400 h-2 rounded-full" 
+                             style="width: {% widthratio user_points.total_points 5000 100 %}%"></div>
+                    </div>
+                </div>
+                <span class="text-5xl">??</span>
+            </div>
+        </div>
+
+        <!-- Tier -->
+        <div class="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">Tier Status</p>
+                    <h2 class="text-2xl font-bold text-white mt-2">
+                        {% if user_points.tier == 'PLATINUM' %}
+                            Platinum ??
+                        {% elif user_points.tier == 'GOLD' %}
+                            Gold ??
+                        {% elif user_points.tier == 'SILVER' %}
+                            Silver ??
+                        {% else %}
+                            Bronze ??
+                        {% endif %}
+                    </h2>
+                </div>
+                <span class="text-5xl">
+                    {% if user_points.tier == 'PLATINUM' %}??{% elif user_points.tier == 'GOLD' %}??{% elif user_points.tier == 'SILVER' %}??{% else %}??{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Week Points -->
+        <div class="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">This Week</p>
+                    <h2 class="text-4xl font-bold text-white mt-2">{{ week_points }}</h2>
+                    <p class="text-xs text-slate-500 mt-2">Keep it up! ??</p>
+                </div>
+                <span class="text-5xl">??</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="grid md:grid-cols-3 gap-8">
+        <!-- Activity Feed -->
+        <div class="md:col-span-2 space-y-4">
+            <h2 class="text-2xl font-bold">?? Recent Activity</h2>
+            <div class="space-y-3 max-h-96 overflow-y-auto">
+                {% if recent_activities %}
+                    {% for activity in recent_activities %}
+                    <div class="bg-white/5 border border-white/10 rounded-lg p-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-semibold">{{ activity.get_activity_type_display }}</h3>
+                            <p class="text-sm text-slate-400">{{ activity.description }}</p>
+                            <p class="text-xs text-slate-500 mt-1">{{ activity.created_at|date:"M d, H:i" }}</p>
+                        </div>
+                        <span class="text-lg font-bold text-green-400">+{{ activity.points_earned }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-8 text-slate-400">
+                        <p>No activities yet. Start by reporting bins or exploring the map! ??</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="space-y-4">
+            <h2 class="text-2xl font-bold">?? Stats</h2>
+            
+            <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+                <p class="text-slate-400 text-sm">Total Reports</p>
+                <h3 class="text-3xl font-bold mt-2">{{ total_reports }}</h3>
+                <div class="w-full bg-slate-700 rounded-full h-2 mt-3">
+                    <div class="bg-gradient-to-r from-green-400 to-emerald-400 h-2 rounded-full" 
+                         style="width: {% widthratio total_reports 100 100 %}%"></div>
+                </div>
+            </div>
+
+            <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+                <p class="text-slate-400 text-sm">Achievements</p>
+                <h3 class="text-3xl font-bold mt-2">{{ achievements.count }}</h3>
+                <p class="text-xs text-slate-500 mt-1">Keep earning! ???</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Achievements -->
+    {% if achievements %}
+    <div class="border-t border-white/10 pt-8">
+        <h2 class="text-2xl font-bold mb-4">??? Recent Achievements</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {% for ua in achievements|slice:":8" %}
+            <div class="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-lg p-4 text-center">
+                <div class="text-4xl mb-2">??</div>
+                <h3 class="font-semibold text-sm">{{ ua.achievement.name }}</h3>
+                <p class="text-xs text-slate-400 mt-1">{{ ua.earned_at|date:"M d, Y" }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

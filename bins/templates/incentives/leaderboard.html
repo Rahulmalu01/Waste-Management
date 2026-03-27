@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard | Smart Waste{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-8 space-y-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-4xl font-bold">?? Global Leaderboard</h1>
+            <p class="text-slate-400 mt-2">See how you rank among other waste management enthusiasts</p>
+        </div>
+        <a href="{% url 'user_points' %}" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition">
+            ? Back to Points
+        </a>
+    </div>
+
+    <!-- Period Filter -->
+    <div class="flex gap-2 flex-wrap">
+        {% for period_choice in periods %}
+        <a href="?period={{ period_choice }}" 
+           class="px-4 py-2 rounded-lg transition {% if selected_period == period_choice %}bg-blue-500 text-white{% else %}bg-white/5 border border-white/10 hover:bg-white/10{% endif %}">
+            {{ period_choice }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-xl">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="border-b border-white/10">
+                    <tr class="text-left text-sm text-slate-400">
+                        <th class="px-6 py-4 font-semibold">Rank</th>
+                        <th class="px-6 py-4 font-semibold">User</th>
+                        <th class="px-6 py-4 font-semibold">Points</th>
+                        <th class="px-6 py-4 font-semibold">Activities</th>
+                        <th class="px-6 py-4 font-semibold">Trend</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/10">
+                    {% for entry in leaderboard %}
+                    <tr class="{% if entry.user == request.user %}bg-blue-500/10 border-l-4 border-blue-500{% else %}hover:bg-white/5{% endif %} transition">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                {% if entry.rank == 1 %}
+                                    <span class="text-2xl">??</span>
+                                    <span class="font-bold">{{ entry.rank }}</span>
+                                {% elif entry.rank == 2 %}
+                                    <span class="text-2xl">??</span>
+                                    <span class="font-bold">{{ entry.rank }}</span>
+                                {% elif entry.rank == 3 %}
+                                    <span class="text-2xl">??</span>
+                                    <span class="font-bold">{{ entry.rank }}</span>
+                                {% else %}
+                                    <span class="text-slate-400">#{{ entry.rank }}</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="font-semibold">
+                                {{ entry.user.first_name|default:entry.user.username }}
+                                {% if entry.user == request.user %}
+                                    <span class="ml-2 text-xs bg-blue-500 px-2 py-1 rounded">You</span>
+                                {% endif %}
+                            </div>
+                            <p class="text-sm text-slate-400">@{{ entry.user.username }}</p>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-lg">{{ entry.points }}</div>
+                            <div class="w-32 bg-slate-700 rounded-full h-2 mt-2">
+                                <div class="bg-gradient-to-r from-green-400 to-emerald-400 h-2 rounded-full" 
+                                     style="width: {% widthratio entry.points 10000 100 %}%"></div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-slate-400">
+                            {{ entry.activities_count|default:"0" }} activities
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-green-400">?</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-slate-400">
+                            No leaderboard data yet. Start participating! ??
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- User Rank Card -->
+    {% if user_rank %}
+    <div class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-6">
+        <div class="grid md:grid-cols-3 gap-4">
+            <div>
+                <p class="text-slate-400 text-sm">Your Rank</p>
+                <h2 class="text-4xl font-bold mt-2">
+                    {% if user_rank.rank == 1 %}??{% elif user_rank.rank == 2 %}??{% elif user_rank.rank == 3 %}??{% else %}#{{ user_rank.rank }}{% endif %}
+                </h2>
+            </div>
+            <div>
+                <p class="text-slate-400 text-sm">Your Points</p>
+                <h2 class="text-4xl font-bold mt-2">{{ user_rank.points }}</h2>
+            </div>
+            <div>
+                <p class="text-slate-400 text-sm">Your Activities</p>
+                <h2 class="text-4xl font-bold mt-2">{{ user_rank.activities_count }}</h2>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Tips Section -->
+    <div class="bg-white/5 border border-white/10 rounded-xl p-6">
+        <h3 class="text-xl font-semibold mb-4">?? Tips to Climb the Leaderboard</h3>
+        <ul class="space-y-2 text-slate-300">
+            <li>? Report bins regularly to earn points</li>
+            <li>? Maintain daily participation streaks for bonus multipliers</li>
+            <li>? Complete achievements for achievement bonuses</li>
+            <li>? Help your community by providing accurate reports</li>
+            <li>? Challenge friends to friendly competitions</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

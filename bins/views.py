@@ -1,5 +1,5 @@
 import json
-from datetime import timedelta
+from datetime import timedelta, datetime, date
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -9,7 +9,11 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from .models import Bin, BinReading, DeviceAuthLog
+from .models import (
+    Bin, BinReading, DeviceAuthLog,
+    UserPoints, Achievement, UserAchievement, ActivityLog, UserStreak, Leaderboard
+)
+
 from alerts.models import Alert
 from alerts.services import (
     create_bin_full_alert,
@@ -221,3 +225,250 @@ def ingest_sensor_data(request):
         })
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+# ============================================
+# INCENTIVE SYSTEM VIEWS
+# ============================================
+
+from django.db.models import Sum, Count, Q
+from datetime import datetime, date
+
+@login_required
+def user_points_view(request):
+    """Display user points and rewards dashboard"""
+    from .models import UserPoints, ActivityLog, UserAchievement
+    
+    # Get or create user points profile
+    user_points, created = UserPoints.objects.get_or_create(user=request.user)
+    
+    # Get recent activities
+    recent_activities = ActivityLog.objects.filter(
+        user=request.user
+    ).order_by('-created_at')[:10]
+    
+    # Get user achievements
+    achievements = UserAchievement.objects.filter(
+        user=request.user
+    ).select_related('achievement').order_by('-earned_at')
+    
+    # Calculate stats
+    total_reports = ActivityLog.objects.filter(
+        user=request.user, 
+        activity_type__in=['BIN_REPORT', 'BIN_CLEARED']
+    ).count()
+    
+    week_points = ActivityLog.objects.filter(
+        user=request.user,
+        created_at__gte=timezone.now() - timedelta(days=7)
+    ).aggregate(Sum('points_earned'))['points_earned__sum'] or 0
+    
+    context = {
+        'user_points': user_points,
+        'recent_activities': recent_activities,
+        'achievements': achievements,
+        'total_reports': total_reports,
+        'week_points': week_points,
+    }
+    return render(request, 'incentives/user_points.html', context)
+
+
+@login_required
+def leaderboard_view(request):
+    """Display leaderboard rankings"""
+    from .models import Leaderboard, UserPoints
+    
+    period = request.GET.get('period', 'MONTHLY')
+    
+    # Get leaderboard for the selected period
+    leaderboard_entries = Leaderboard.objects.filter(
+        period=period
+    ).select_related('user').order_by('rank')[:50]
+    
+    # Get current user's rank
+    user_rank = Leaderboard.objects.filter(
+        user=request.user,
+        period=period
+    ).first()
+    
+    # Fallback: Get top users by total points if leaderboard data doesn't exist
+    if not leaderboard_entries:
+        top_users = UserPoints.objects.all().order_by('-total_points')[:50]
+        leaderboard_entries = top_users
+    
+    context = {
+        'leaderboard': leaderboard_entries,
+        'selected_period': period,
+        'user_rank': user_rank,
+        'periods': ['WEEKLY', 'MONTHLY', 'ALLTIME']
+    }
+    return render(request, 'incentives/leaderboard.html', context)
+
+
+@login_required
+def achievements_view(request):
+    """Display all achievements"""
+    from .models import Achievement, UserAchievement
+    
+    # Get all available achievements
+    all_achievements = Achievement.objects.filter(is_active=True).order_by('category', 'name')
+    
+    # Get user's earned achievements
+    earned_achievement_ids = UserAchievement.objects.filter(
+        user=request.user
+    ).values_list('achievement_id', flat=True)
+    
+    # Separate earned and available
+    earned = all_achievements.filter(id__in=earned_achievement_ids)
+    available = all_achievements.exclude(id__in=earned_achievement_ids)
+    
+    # Group by category
+    categories = Achievement.CATEGORY_CHOICES
+    achievements_by_category = {}
+    for code, label in categories:
+        achievements_by_category[label] = {
+            'earned': earned.filter(category=code),
+            'available': available.filter(category=code),
+        }
+    
+    context = {
+        'achievements_by_category': achievements_by_category,
+        'total_earned': earned.count(),
+        'total_available': available.count(),
+        'total_achievements': all_achievements.count(),
+    }
+    return render(request, 'incentives/achievements.html', context)
+
+
+@login_required
+def activity_log_view(request):
+    """Display user activity log"""
+    from .models import ActivityLog
+    
+    # Get activities with pagination
+    from django.core.paginator import Paginator
+    
+    activities = ActivityLog.objects.filter(
+        user=request.user
+    ).order_by('-created_at')
+    
+    paginator = Paginator(activities, 20)
+    page = request.GET.get('page', 1)
+    page_activities = paginator.get_page(page)
+    
+    # Activity stats
+    today_activities = ActivityLog.objects.filter(
+        user=request.user,
+        created_at__date=date.today()
+    ).count()
+    
+    today_points = ActivityLog.objects.filter(
+        user=request.user,
+        created_at__date=date.today()
+    ).aggregate(Sum('points_earned'))['points_earned__sum'] or 0
+    
+    context = {
+        'page_activities': page_activities,
+        'paginator': paginator,
+        'today_activities': today_activities,
+        'today_points': today_points,
+    }
+    return render(request, 'incentives/activity_log.html', context)
+
+
+@login_required
+def add_activity_points(request, activity_type, points=0, description="", bin_id=None):
+    """Helper function to add activity and update user points"""
+    from .models import ActivityLog, UserPoints, UserStreak
+    from datetime import date
+    
+    try:
+        user_points = UserPoints.objects.get(user=request.user)
+    except UserPoints.DoesNotExist:
+        user_points = UserPoints.objects.create(user=request.user)
+    
+    # Create activity log
+    activity = ActivityLog.objects.create(
+        user=request.user,
+        activity_type=activity_type,
+        points_earned=points,
+        description=description,
+        related_bin_id=bin_id
+    )
+    
+    # Update user points
+    user_points.total_points += points
+    user_points.lifetime_points += points
+    user_points.last_activity_date = date.today()
+    user_points.update_tier()
+    user_points.update_level()
+    user_points.save()
+    
+    # Update streak
+    try:
+        streak = UserStreak.objects.get(user=request.user)
+        today = date.today()
+        last_date = streak.current_streak_date
+        
+        if last_date == today:
+            # Already logged today, no change
+            pass
+        elif (today - last_date).days == 1:
+            # Consecutive day, increment streak
+            streak.streak_count += 1
+            if streak.streak_count > streak.best_streak_count:
+                streak.best_streak_count = streak.streak_count
+        else:
+            # Streak broken
+            streak.last_broken_date = last_date
+            streak.streak_count = 1
+        
+        streak.total_active_days += 1
+        streak.save()
+    except UserStreak.DoesNotExist:
+        UserStreak.objects.create(user=request.user, streak_count=1, total_active_days=1)
+    
+    return activity
+
+
+@login_required
+def check_and_award_achievements(request):
+    """Check if user qualifies for any achievements and award them"""
+    from .models import Achievement, UserAchievement, ActivityLog, UserAchievement
+    
+    user = request.user
+    earned_achievements = UserAchievement.objects.filter(user=user).values_list('achievement_id', flat=True)
+    available_achievements = Achievement.objects.filter(
+        is_active=True
+    ).exclude(id__in=earned_achievements)
+    
+    for achievement in available_achievements:
+        if achievement.category == 'CONSISTENCY':
+            # Check daily visit streak
+            try:
+                streak = user.streak_info
+                if streak.streak_count >= achievement.condition_value:
+                    UserAchievement.objects.create(
+                        user=user,
+                        achievement=achievement
+                    )
+                    add_activity_points(request, 'CONSISTENCY_BONUS', achievement.points_reward)
+            except:
+                pass
+        
+        elif achievement.category == 'REPORTING':
+            # Check total reports
+            report_count = ActivityLog.objects.filter(
+                user=user,
+                activity_type__in=['BIN_REPORT', 'BIN_CLEARED']
+            ).count()
+            
+            if report_count >= achievement.condition_value:
+                UserAchievement.objects.create(
+                    user=user,
+                    achievement=achievement
+                )
+                add_activity_points(request, 'CONSISTENCY_BONUS', achievement.points_reward)
+    
+    return True
+
+
